@@ -1,0 +1,261 @@
+{
+ "rows_in": 26983889,
+ "unknown_rows": 37462,
+ "unknown_recovered_rows": 11516,
+ "rows_out": 26660248,
+ "dedupe_removed": 297695,
+ "multi_artist_share": 0.11369237825544609,
+ "users": 2000,
+ "name_spelling_merges": [
+  {
+   "key": "adams avenue",
+   "variants": [
+    "ADAMS AVENUE",
+    "Adams Avenue"
+   ],
+   "listens": 63328
+  },
+  {
+   "key": "bts",
+   "variants": [
+    "BTS",
+    "BTS \u2022 Recomendada para voc\u00ea",
+    "BTS \u2022 Da ordem aleat\u00f3ria inteligente",
+    "BTS \u2022 Recommended for you",
+    "BTS \u2022 From Smart Shuffle"
+   ],
+   "listens": 45978
+  },
+  {
+   "key": "rm",
+   "variants": [
+    "RM",
+    "RM \u2022 Recomendada para voc\u00ea",
+    "RM \u2022 Recommended for you",
+    "RM \u2022 From Smart Shuffle",
+    "Rm"
+   ],
+   "listens": 27357
+  },
+  {
+   "key": "unknown artist",
+   "variants": [
+    "Unknown Artist",
+    "Unknown artist",
+    "Unknown Artist",
+    "Unknown artist",
+    "unknown artist"
+   ],
+   "listens": 24749
+  },
+  {
+   "key": "axxturel",
+   "variants": [
+    "Axxturel",
+    "axxturel"
+   ],
+   "listens": 12807
+  },
+  {
+   "key": "johann sebastian bach",
+   "variants": [
+    "Johann Sebastian Bach",
+    "Johann Sebastian Bach",
+    "Johann Sebastian Bach \u2022 Karl Richter",
+    "Johann Sebastian Bach \u2022 William McVicker"
+   ],
+   "listens": 10810
+  },
+  {
+   "key": "rxknephew",
+   "variants": [
+    "RXKNephew",
+    "RXKNephew \u2022 Dj Smokey"
+   ],
+   "listens": 9492
+  },
+  {
+   "key": "juice wrld",
+   "variants": [
+    "Juice WRLD",
+    "Juice WRLD \u2022 Rvssian \u2022 Clever",
+    "Juice WRLD \u2022 Marshmello",
+    "Juice WRLD \u2022 Jarad Higgins, Nicholas Mira",
+    "Juice WRLD \u2022 Young Thug"
+   ],
+   "listens": 9418
+  },
+  {
+   "key": "kanye west",
+   "variants": [
+    "Kanye West",
+    "Kanye West",
+    "Kanye West \u2022 Y\u00e9",
+    "Kanye West \u2022 Kanye West, Stephan Taft, Sean Anderson, Terrence Thornton, Tauheed Epps, James Thomas, Denzie Beagle, Winston Riley & Reggie Williams\u0001",
+    "Kanye West \u2022 Y\u00e9 \u2022 Peso Pluma"
+   ],
+   "listens": 6942
+  },
+  {
+   "key": "jung kook",
+   "variants": [
+    "Jung Kook",
+    "Jung Kook \u2022 Recomendada para voc\u00ea",
+    "Jung Kook \u2022 Recommended for you",
+    "Jung Kook \u2022 From Smart Shuffle",
+    "Jung Kook \u2022 Direkomendasikan untukmu"
+   ],
+   "listens": 6676
+  },
+  {
+   "key": "4jay",
+   "variants": [
+    "4jay",
+    "4JAY"
+   ],
+   "listens": 6568
+  },
+  {
+   "key": "the beatles",
+   "variants": [
+    "The Beatles",
+    "The Beatles",
+    "The Beatles \u2022 Lossless",
+    "The  Beatles",
+    "The Beatles \u2022 Recomendaciones para ti"
+   ],
+   "listens": 6533
+  },
+  {
+   "key": "ado",
+   "variants": [
+    "Ado",
+    "ADO",
+    "Ado",
+    "Ado \u2022 HiiragiKirai",
+    "Ado \u2022 From Smart Shuffle"
+   ],
+   "listens": 6420
+  },
+  {
+   "key": "various artists",
+   "variants": [
+    "Various Artists",
+    "Various Artists",
+    "VARIOUS ARTISTS \u2022 Lee WooJin \u2022 Panutuch Saelee \u2022 SAEBYEOL \u2022 Seo Ihan",
+    "Various artists",
+    "VARIOUS ARTISTS \u2022 SAEBYEOL"
+   ],
+   "listens": 5113
+  },
+  {
+   "key": "sonny zero",
+   "variants": [
+    "sonny zero",
+    "Sonny Zero"
+   ],
+   "listens": 5002
+  }
+ ],
+ "collab_examples": [
+  {
+   "credit": "Torsten Abrolat & Regen Macher",
+   "artists": [
+    "torsten abrolat",
+    "regen macher"
+   ],
+   "listens": 70159
+  },
+  {
+   "credit": "j-hope feat. GloRilla",
+   "artists": [
+    "b3977da4-f899-4328-921b-ecc599a5618a",
+    "2a7ef045-ca10-4cb5-8fe9-1f5d38e84bc2"
+   ],
+   "listens": 35930
+  },
+  {
+   "credit": "V with Park Hyo Shin",
+   "artists": [
+    "83096042-3785-481e-8843-dee69f1aad12",
+    "e941e097-0f9e-496d-a381-dd74a953682c"
+   ],
+   "listens": 34115
+  },
+  {
+   "credit": "Jung Kook feat. Latto",
+   "artists": [
+    "23c8056b-ee13-4cfc-a772-2f5292e35bb5",
+    "355cc194-b8db-4af2-8678-c7ad54213f4b"
+   ],
+   "listens": 32108
+  },
+  {
+   "credit": "LE SSERAFIM feat. j\u2010hope of BTS",
+   "artists": [
+    "1ee37742-1e3d-4e61-84d2-bc85f4c1459a",
+    "b3977da4-f899-4328-921b-ecc599a5618a"
+   ],
+   "listens": 17145
+  },
+  {
+   "credit": "RM, youjeen",
+   "artists": [
+    "58f1e354-ecbc-4fd3-aa25-97eb1d9bd8b9",
+    "95580754-42bd-4748-a11b-1006ed476743"
+   ],
+   "listens": 8144
+  },
+  {
+   "credit": "HUNTR/X (EJAE, AUDREY NUNA & REI AMI) & KPop Demon Hunters Cast",
+   "artists": [
+    "dc7fd424-6ba4-45cc-b407-7716c7bb3605",
+    "0f0a0c02-0aa6-4fc0-aad0-bb2e9d5bcbbb",
+    "7b54e5e4-82f7-4dfe-9cd8-fc8d9f6815e3",
+    "59adde12-dd9d-40c6-9906-bd4357633915",
+    "7ba8efd8-9cef-49dd-8399-3e90dac43fa6"
+   ],
+   "listens": 5379
+  },
+  {
+   "credit": "You & The Explosion Band",
+   "artists": [
+    "fc8c51cb-7fec-4a8f-97e6-d9cab288417c",
+    "the explosion band"
+   ],
+   "listens": 4978
+  },
+  {
+   "credit": "Lorien Testard & Alice Duport-Percier",
+   "artists": [
+    "1557e001-08ec-405d-a0cf-6d2625e90af5",
+    "1850311f-b87c-4178-b98b-1d61487511c9"
+   ],
+   "listens": 4214
+  },
+  {
+   "credit": "RM, Youjeen",
+   "artists": [
+    "58f1e354-ecbc-4fd3-aa25-97eb1d9bd8b9",
+    "95580754-42bd-4748-a11b-1006ed476743"
+   ],
+   "listens": 4181
+  }
+ ],
+ "session_minutes_quantiles": [
+  0.0,
+  5.366666666666666,
+  25.7,
+  64.58333333333333,
+  134.55
+ ],
+ "listens_per_session_quantiles": [
+  1.0,
+  2.0,
+  7.0,
+  16.0,
+  34.0
+ ],
+ "warmup_share": 0.17128032717475097,
+ "timezone": "not in the dump: all times treated as UTC"
+}

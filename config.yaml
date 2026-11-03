@@ -1,0 +1,19 @@
+dump: listenbrainz-dump-2758-20261101-000003-full
+spark_tar: https://data.metabrainz.org/pub/musicbrainz/listenbrainz/fullexport/listenbrainz-dump-2758-20261101-000003-full/listenbrainz-spark-dump-2758-20261101-000003-full.tar
+# most recent 12 complete months before the dump date (1 Nov 2026)
+window_start: 2025-11-01
+window_end: 2026-11-01   # exclusive
+months: [2025-11, 2025-12, 2026-01, 2026-02, 2026-03, 2026-04, 2026-05, 2026-06, 2026-07, 2026-08, 2026-09, 2026-10]
+sample:
+  min_listens: 3000
+  min_active_months: 10
+  n: 2000
+  seed: 20261103
+bots:
+  min_day_listens_for_gap_check: 50   # a "whole day" needs enough listens to judge its median gap
+  max_median_gap_s: 30
+  max_fast_days: 2                    # more -> bot; 1-2 -> keep user, drop those days
+  max_listens_per_day: 1500
+  max_identical_ts_share: 0.20
+duckdb_threads: 2
+duckdb_memory: 1500MB   # 8 GB laptop: keep it usable while this runs

@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; connect-src 'none'; form-action 'none'; base-uri 'none'">
+<title>Predictable Ears: You</title>
+<style>
+:root{--bg:#f7f6f2;--card:#fff;--ink:#1d1d1b;--muted:#6b6a64;--line:#e4e2da;--accent:#2f6fde;--accent-soft:#e6eefc;--warn:#c2571a;--good:#2e8b57}
+@media (prefers-color-scheme:dark){:root{--bg:#141413;--card:#1d1d1b;--ink:#eceae3;--muted:#9a988f;--line:#33322e;--accent:#7aa5f5;--accent-soft:#1e2a40;--warn:#f08a4b;--good:#5fc08a}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:980px;margin:0 auto;padding:28px 16px 80px}
+h1{font-size:24px;margin:0 0 4px}h2{font-size:18px;margin:32px 0 10px}h3{font-size:15px;margin:0 0 6px}
+.muted{color:var(--muted)}.small{font-size:13px}
+.lock{display:inline-block;background:var(--accent-soft);color:var(--accent);border-radius:999px;padding:2px 10px;font-size:12px;font-weight:600}
+#drop{margin-top:18px;border:2px dashed var(--line);border-radius:14px;padding:36px 16px;text-align:center;background:var(--card);cursor:pointer}
+#drop.over{border-color:var(--accent);background:var(--accent-soft)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px}
+.big{font-size:26px;font-weight:650}
+.bar{height:8px;background:var(--line);border-radius:4px;position:relative;margin-top:8px}
+.bar i{position:absolute;top:-4px;width:3px;height:16px;background:var(--accent);border-radius:2px}
+.bar b{position:absolute;top:0;height:8px;background:var(--accent-soft);border-radius:4px}
+table{border-collapse:collapse;width:100%;font-size:14px}td,th{padding:6px 8px;border-bottom:1px solid var(--line);text-align:left}
+th{color:var(--muted);font-weight:600}
+.note{border-left:3px solid var(--warn);padding:4px 12px;margin:10px 0;color:var(--muted);font-size:13px}
+.hl{background:var(--accent-soft);color:var(--ink);padding:0 4px;border-radius:4px;font-weight:600}
+svg text{fill:var(--muted);font-size:11px}
+label{margin-right:12px;white-space:nowrap}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<main>
+  <span class="lock">Runs only in this browser · no network</span>
+  <h1>How predictable is your listening?</h1>
+  <p class="muted">Drop your Spotify <b>Extended Streaming History</b> files (<code>Streaming_History_Audio_*.json</code>). They're read in this page and never leave it: the page's security policy blocks every network request.</p>
+  <div id="drop">Drop files here, or click to choose<input id="file" type="file" multiple accept=".json" class="hidden"></div>
+  <p id="status" class="small muted"></p>
+
+  <section id="out" class="hidden">
+    <h2>You vs <span id="popn"></span> ListenBrainz listeners</h2>
+    <div class="grid" id="cards"></div>
+    <p class="small muted">The bar spans the population (5th–95th percentile); the shaded part is the middle half; the blue tick is you.</p>
+    <div class="card" style="margin-top:12px"><h3>Your listener type</h3><div id="type"></div></div>
+
+    <h2>Loop days and breakout months</h2>
+    <div class="card"><svg id="timeline" width="100%" height="170"></svg>
+      <p class="small muted">Bars: loop days per month (one track ≥ 30% of the day's plays and ≥ 5 plays). Orange dot: a breakout month (first-time artists well above your usual).</p></div>
+
+    <h2>Your top loop tracks</h2>
+    <div class="card"><table id="loops"></table></div>
+
+    <h2>Only possible with your own data</h2>
+    <p class="note">Not comparable with ListenBrainz: these views use Spotify fields that the public data doesn't have.</p>
+    <div class="card"><h3>Chosen vs flowed</h3>
+      <p class="small muted">How each play started (<code>reason_start</code>). Tick the ones that mean <b>you picked it</b>; the rest count as "flowed" (autoplay, track ended, …).</p>
+      <div id="reasons"></div><div id="chosen" style="margin-top:10px"></div></div>
+    <div class="grid" style="margin-top:12px">
+      <div class="card"><h3>Shuffle on vs off</h3><div id="shuffle"></div></div>
+      <div class="card"><h3>Skips</h3><div id="skips"></div></div>
+    </div>
+    <p class="small muted" style="margin-top:24px">Definitions: <code>METRICS.md</code>. A listen counts if it played ≥ 30 s; podcasts and local files are excluded. Times are in this browser's time zone.</p>
+  </section>
+</main>
+<script>
+/*METRICS_JS*/
+const POP = /*POPULATION_JSON*/;
+</script>
+<script>
+(() => {
+const $ = (id) => document.getElementById(id);
+const pct = (x) => (x == null ? "–" : (100 * x).toFixed(0) + "%");
+const DEFAULT_CHOSEN = new Set(["clickrow", "playbtn", "backbtn", "remote"]);
+let LISTENS = [], M = null;
+
+$("popn").textContent = POP.n_users.toLocaleString();
+const drop = $("drop");
+drop.onclick = () => $("file").click();
+$("file").onchange = (e) => load(e.target.files);
+drop.ondragover = (e) => { e.preventDefault(); drop.classList.add("over"); };
+drop.ondragleave = () => drop.classList.remove("over");
+drop.ondrop = (e) => { e.preventDefault(); drop.classList.remove("over"); load(e.dataTransfer.files); };
+
+async function load(files) {
+  const rows = [];
+  for (const f of files) {
+    try { rows.push(...JSON.parse(await f.text())); }
+    catch { $("status").textContent = `Couldn't read ${f.name} as JSON.`; return; }
+  }
+  let short = 0, nontrack = 0;
+  LISTENS = [];
+  for (const r of rows) {
+    if (!r.master_metadata_track_name || !r.master_metadata_album_artist_name) { nontrack++; continue; }
+    if ((r.ms_played || 0) < 30000) { short++; continue; }
+    const artists = PEARS.splitArtists(r.master_metadata_album_artist_name);
+    if (!artists.length) { nontrack++; continue; }
+    const tn = PEARS.normText(r.master_metadata_track_name);
+    LISTENS.push({ ts: Math.floor(Date.parse(r.ts) / 1000), artists, track: artists[0] + "|" + tn,
+      label: `${r.master_metadata_track_name} — ${r.master_metadata_album_artist_name}`,
+      reason: r.reason_start || "unknown", shuffle: !!r.shuffle,
+      skipped: r.skipped === true || r.reason_end === "fwdbtn" });
+  }
+  LISTENS.sort((a, b) => a.ts - b.ts);
+  $("status").textContent = `${rows.length.toLocaleString()} rows · ${LISTENS.length.toLocaleString()} listens used · ${short.toLocaleString()} under 30 s · ${nontrack.toLocaleString()} podcasts/local/unknown excluded.`;
+  if (LISTENS.length < 600) { $("status").textContent += " Too few listens for stable results."; return; }
+  M = PEARS.userMetrics(LISTENS.map((l) => l.ts), LISTENS.map((l) => l.artists), LISTENS.map((l) => l.track), { perListen: true });
+  render();
+}
+
+function rank(key, v) {
+  const p = POP.percentiles[key];
+  if (!p || v == null) return null;
+  let i = 0; while (i < 100 && p[i] < v) i++;
+  return i;
+}
+
+function card(title, key, v, fmt, phrase) {
+  const p = POP.percentiles[key], r = rank(key, v);
+  const lo = p[5], hi = p[95], x = (t) => Math.max(0, Math.min(100, ((t - lo) / (hi - lo || 1)) * 100));
+  return `<div class="card"><div class="muted small">${title}</div><div class="big">${fmt(v)}</div>
+    <div class="small">${r == null ? "" : phrase(r)}</div>
+    <div class="bar"><b style="left:${x(p[25])}%;width:${x(p[75]) - x(p[25])}%"></b><i style="left:${x(v)}%"></i></div></div>`;
+}
+
+function render() {
+  $("out").classList.remove("hidden");
+  $("cards").innerHTML = [
+    card("Next artist guessed by a one-line rule", "predictability_top1", M.predictability_top1, pct, (r) => `More predictable than <span class="hl">${r}%</span> of listeners`),
+    card("Effective number of artists", "effective_artists", M.effective_artists, (v) => v.toFixed(0), (r) => `More varied than <span class="hl">${r}%</span> of listeners`),
+    card("Plays that are a first-time artist", "exploration_rate", M.exploration_rate, pct, (r) => `More exploratory than <span class="hl">${r}%</span>`),
+    card("Plays going to your top 10 artists", "concentration_top10", M.concentration_top10, pct, (r) => `More concentrated than <span class="hl">${r}%</span>`),
+    card("Loop days per month", "loop_days_per_month", M.loop_days_per_month, (v) => v.toFixed(1), (r) => `Loops more than <span class="hl">${r}%</span>`),
+  ].join("");
+
+  const cm = POP.cluster_model, z = cm.features.map((f, i) => ((M[f] ?? cm.mean[i]) - cm.mean[i]) / cm.scale[i]);
+  let best = 0, bd = Infinity;
+  cm.centers.forEach((c, j) => { const d = c.reduce((s, cj, i) => s + (cj - z[i]) ** 2, 0); if (d < bd) { bd = d; best = j; } });
+  const comp = POP.composites.find((c) => c.name === cm.names[best]);
+  $("type").innerHTML = `<p>Closest to <span class="hl">${cm.names[best]}</span> (${pct(comp.share)} of listeners). Typical ${cm.names[best].toLowerCase()}: ${comp.line}</p>
+    <p class="small muted">Best rule for you: <b>${M.best_baseline.replace("_", " ")}</b> (${pct(M.predictability_top1)} top-1, ${pct(M.predictability_top5)} within 5 guesses).</p>`;
+
+  timeline();
+  loops();
+  reasons();
+  shuffleSkips();
+}
+
+function timeline() {
+  const months = new Map();
+  const mk = (ts) => { const d = new Date(ts * 1000); return d.getFullYear() * 12 + d.getMonth(); };
+  for (const l of LISTENS) months.set(mk(l.ts), 0);
+  const loopsByMonth = new Map();
+  for (const [day] of M.loop_day_list) { const d = new Date(day * 86400000); const m = d.getUTCFullYear() * 12 + d.getUTCMonth(); loopsByMonth.set(m, (loopsByMonth.get(m) || 0) + 1); }
+  const first = Math.min(...months.keys()), last = Math.max(...months.keys()), n = last - first + 1;
+  const svg = $("timeline"), W = svg.clientWidth || 900, H = 170, pad = 24, bw = (W - pad * 2) / n;
+  const maxL = Math.max(1, ...loopsByMonth.values());
+  let s = "";
+  for (let i = 0; i < n; i++) {
+    const m = first + i, v = loopsByMonth.get(m) || 0, h = (v / maxL) * (H - 50), x = pad + i * bw;
+    s += `<rect x="${x + 1}" y="${H - 24 - h}" width="${Math.max(1, bw - 2)}" height="${h}" fill="var(--accent)" opacity=".8"><title>${Math.floor(m / 12)}-${String(m % 12 + 1).padStart(2, "0")}: ${v} loop days</title></rect>`;
+    if (M.breakout_months.includes(m)) s += `<circle cx="${x + bw / 2}" cy="14" r="5" fill="var(--warn)"><title>breakout month</title></circle>`;
+    if (m % 12 === 0 || i === 0) s += `<text x="${x}" y="${H - 6}">${Math.floor(m / 12)}</text>`;
+  }
+  svg.innerHTML = s;
+}
+
+function loops() {
+  const byTrack = new Map();
+  M.loop_day_list.forEach(([, t, k]) => { const e = byTrack.get(t) || { days: 0, plays: 0 }; e.days++; e.plays += k; byTrack.set(t, e); });
+  const label = new Map(LISTENS.map((l) => [l.track, l.label]));
+  const top = [...byTrack].sort((a, b) => b[1].days - a[1].days || b[1].plays - a[1].plays).slice(0, 10);
+  $("loops").innerHTML = top.length
+    ? `<tr><th>Track</th><th>Loop days</th><th>Plays on those days</th></tr>` + top.map(([t, e]) => `<tr><td>${esc(label.get(t) || t)}</td><td>${e.days}</td><td>${e.plays}</td></tr>`).join("")
+    : `<tr><td class="muted">No loop days.</td></tr>`;
+}
+const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+function subsetRate(pred) {
+  const b = M.best_baseline; let h = 0, n = 0;
+  for (const { i, hit } of M.per_listen) if (pred(LISTENS[i])) { n++; h += hit[b]; }
+  return { rate: n ? h / n : null, n };
+}
+
+function reasons() {
+  const counts = new Map();
+  LISTENS.forEach((l) => counts.set(l.reason, (counts.get(l.reason) || 0) + 1));
+  $("reasons").innerHTML = [...counts].sort((a, b) => b[1] - a[1]).map(([r, c]) =>
+    `<label><input type="checkbox" value="${esc(r)}" ${DEFAULT_CHOSEN.has(r) ? "checked" : ""}> ${esc(r)} <span class="muted">(${c.toLocaleString()})</span></label>`).join(" ");
+  $("reasons").onchange = chosen;
+  chosen();
+}
+function chosen() {
+  const set = new Set([...$("reasons").querySelectorAll("input:checked")].map((x) => x.value));
+  const a = subsetRate((l) => set.has(l.reason)), b = subsetRate((l) => !set.has(l.reason));
+  const share = LISTENS.filter((l) => set.has(l.reason)).length / LISTENS.length;
+  $("chosen").innerHTML = `<table><tr><th></th><th>Share of plays</th><th>Next artist guessed</th><th>Test plays</th></tr>
+    <tr><td>Chosen by you</td><td>${pct(share)}</td><td><span class="hl">${pct(a.rate)}</span></td><td>${a.n}</td></tr>
+    <tr><td>Flowed</td><td>${pct(1 - share)}</td><td><span class="hl">${pct(b.rate)}</span></td><td>${b.n}</td></tr></table>
+    <p class="small muted">Uses your best rule (${M.best_baseline.replace("_", " ")}) on the last 20% of your history.</p>`;
+}
+
+function shuffleSkips() {
+  const on = subsetRate((l) => l.shuffle), off = subsetRate((l) => !l.shuffle);
+  $("shuffle").innerHTML = `<p>Next artist guessed: <span class="hl">${pct(on.rate)}</span> with shuffle on (${on.n} plays), <span class="hl">${pct(off.rate)}</span> off (${off.n}).</p>`;
+  const loopDays = new Set(M.loop_day_list.map(([d]) => d));
+  const dayOf = (ts) => { const d = new Date(ts * 1000); return Math.round(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / 86400000); };
+  let a = [0, 0], b = [0, 0];
+  for (const l of LISTENS) { const t = loopDays.has(dayOf(l.ts) - 1) ? a : b; t[0] += l.skipped; t[1]++; }
+  const all = LISTENS.filter((l) => l.skipped).length / LISTENS.length;
+  $("skips").innerHTML = `<p>You skip <span class="hl">${pct(all)}</span> of plays (≥ 30 s plays only).</p>
+    <p class="small">Day after a loop day: ${pct(a[1] ? a[0] / a[1] : null)} skipped · other days: ${pct(b[1] ? b[0] / b[1] : null)}.</p>`;
+}
+})();
+</script>
+</body>
+</html>

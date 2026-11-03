@@ -1,0 +1,6 @@
+#!/bin/sh
+# Block personal listening data from ever being committed.
+if git diff --cached --name-only | grep -E '^personal/|Streaming_History.*\.json$'; then
+  echo "pre-commit: personal data staged (see above). Unstage it." >&2
+  exit 1
+fi

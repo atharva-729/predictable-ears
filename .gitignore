@@ -1,0 +1,12 @@
+data/raw/
+data/*.parquet
+personal/
+Streaming_History*.json
+.env
+__pycache__/
+*.pyc
+.pytest_cache/
+# per-user rows: never published
+data/clean/
+reports/*.parquet
+*.log
