@@ -1,0 +1,16 @@
+{
+ "n_users": 2000,
+ "best_single_median": 0.35256530816951775,
+ "mixture_median": 0.34543063773833005,
+ "oracle_median": 0.39624405844699656,
+ "gain_median_pts": 0.0,
+ "gain_mean_pts": -0.8952558925868739,
+ "share_users_gain_over_5pts": 0.0005,
+ "share_users_mixture_worse": 0.367,
+ "heaviest_weight_share": {
+  "repeat_last": 0.8865,
+  "most_frequent": 0.0375,
+  "markov1": 0.07,
+  "time_of_day": 0.006
+ }
+}

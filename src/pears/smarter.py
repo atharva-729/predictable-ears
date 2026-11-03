@@ -43,11 +43,15 @@ def _tensor(rows):
     return R, T
 
 
-def _hits(R, T, W):
-    """Hits for each weight vector in W (g, 4) -> (g,)."""
-    S = R @ W.T  # (m, MAXC, g)
-    pick = S.argmax(axis=1)  # (m, g)
-    return np.take_along_axis(T, pick, axis=1).sum(axis=0)
+def _hits(R, T, W, chunk=2000):
+    """Hits for each weight vector in W (g, 4) -> (g,). Chunked over listens so memory
+    stays ~chunk*MAXC*g floats (~80 MB) even for the heaviest listeners."""
+    out = np.zeros(len(W), dtype=np.int64)
+    for i in range(0, len(R), chunk):
+        S = R[i:i + chunk] @ W.T  # (c, MAXC, g)
+        pick = S.argmax(axis=1)  # (c, g)
+        out += np.take_along_axis(T[i:i + chunk], pick, axis=1).sum(axis=0)
+    return out
 
 
 def user(artists, how):

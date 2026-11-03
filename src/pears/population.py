@@ -89,6 +89,8 @@ def clusters(m):
         table.append({"cluster": names[i], "share": float(len(g) / len(d)), "n": int(len(g)),
                       **{f: float(g[f].median()) for f in FEATURES},
                       "effective_artists": float(g.effective_artists.median()),
+                      "predictability_top5": float(g.predictability_top5.median()),
+                      "best_rule_share": g.best_baseline.value_counts(normalize=True).round(4).to_dict(),
                       "z": dict(zip(FEATURES, map(float, km.cluster_centers_[i])))})
     # scatter: binned 2-D counts per cluster, not individual points
     bins = d.assign(px=(d.predictability_top1 * 50).round() / 50,
@@ -97,7 +99,29 @@ def clusters(m):
                .assign(cluster=lambda x: x.cluster.map(names)).to_dict("records"))
     model = {"features": FEATURES, "mean": sc.mean_.tolist(), "scale": sc.scale_.tolist(),
              "centers": km.cluster_centers_.tolist(), "names": [names[i] for i in range(k)]}
-    return {"k": k, "silhouette": scores, "table": table, "scatter_binned": scatter}, model, d
+    return {"k": k, "silhouette": scores, "table": table, "scatter_binned": scatter}, model, d, names
+
+
+RULES = ["repeat_last", "most_frequent", "markov1", "time_of_day"]
+
+
+def rules_breakdown(m, dc, names):
+    """Per guessing rule: overall medians, share of users it wins, and its median hit
+    rate within each listener type and listening-volume tercile (aggregates only)."""
+    vol = pd.qcut(m.n_listens.rank(method="first"), 3, labels=["lighter", "middle", "heavier"])
+    out = []
+    for b in RULES:
+        out.append({
+            "rule": b,
+            "top1_median": float(m[f"{b}_top1"].median()),
+            "top5_median": float(m[f"{b}_top5"].median()),
+            "top1_q1": float(m[f"{b}_top1"].quantile(.25)), "top1_q3": float(m[f"{b}_top1"].quantile(.75)),
+            "wins_share": float((m.best_baseline == b).mean()),
+            "by_type": {names[c]: float(g[f"{b}_top1"].median()) for c, g in dc.groupby("cluster")},
+            "by_volume": {str(v): float(g[f"{b}_top1"].median()) for v, g in m.groupby(vol, observed=True)},
+        })
+    return {"rules": out, "volume_terciles": {str(v): [int(g.n_listens.min()), int(g.n_listens.max())]
+                                              for v, g in m.groupby(vol, observed=True)}}
 
 
 def relationships(m):
@@ -170,7 +194,8 @@ def time_patterns(m):
         pred = np.where(n > 0, hits / np.maximum(n, 1), np.nan)
         exr = np.where(post > 0, new / np.maximum(post, 1), np.nan)
         wk = lambda a, w, sl: float(np.nansum(a[sl] * w[sl]) / w[sl].sum())
-        day = lambda a, w: [float(np.nansum(a[h::24] * w[h::24]) / w[h::24].sum()) for h in range(24)]
+        day = lambda a, w: [float(np.nansum(a[h::24] * w[h::24]) / w[h::24].sum()) if w[h::24].sum() else None
+                            for h in range(24)]
         out[label] = {
             "predictability_by_how": [None if np.isnan(x) else float(x) for x in pred],
             "exploration_by_how": [None if np.isnan(x) else float(x) for x in exr],
@@ -181,7 +206,7 @@ def time_patterns(m):
             "exploration_weekday": wk(exr, post, slice(0, 120)),
             "exploration_weekend": wk(exr, post, slice(120, 168)),
         }
-        ph = out[label]["predictability_by_hour"]
+        ph = [x for x in out[label]["predictability_by_hour"] if x is not None]
         out[label]["hour_of_day_range_pts"] = float((max(ph) - min(ph)) * 100)
     out["note"] = ("ListenBrainz has no user timezone. 'utc' treats every user as UTC; 'local' "
                    f"shifts each user so their quietest hours fall at {LOCAL_TROUGH_HOUR}:00.")
@@ -240,7 +265,8 @@ def histograms(m):
 def run():
     m = pd.read_parquet("reports/user_metrics.parquet")
     res = {"headline": headline(m), "histograms": histograms(m)}
-    res["clusters"], model, _ = clusters(m)
+    res["clusters"], model, dc, names = clusters(m)
+    res["rules"] = rules_breakdown(m, dc, names)
     res["relationships"] = relationships(m)
     res["loop_breakout"] = loop_breakout(m)
     res["time_patterns"] = time_patterns(m)

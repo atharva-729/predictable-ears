@@ -1,0 +1,441 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Predictable Ears</title>
+<meta name="description" content="How predictable is what we listen to? One-line rules against 12 months of real listening from 2,000 ListenBrainz listeners.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0b0e14; --ink2:#131822; --ink3:#1e2531; --rule:#2c3544;
+  --fg:#ece7dc; --soft:#cfc9bd; --mut:#8e98a8;
+  --flame:#ff8a2a; --flame-bg:rgba(255,138,42,.13);
+  --ok:#2fd3a7; --bad:#ff5a4d;
+  /* chart series: reference palette, dark steps */
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500; --s5:#d55181; --grid:#2c2c2a; --axis:#383835;
+  --serif:"Fraunces",Georgia,serif; --sans:"IBM Plex Sans",system-ui,sans-serif; --mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--ink);color:var(--fg);font:15px/1.55 var(--sans);-webkit-font-smoothing:antialiased}
+a{color:inherit}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+section{padding:44px 0;border-bottom:1px solid var(--rule)}
+section.alt{background:var(--ink2)}
+.kicker{font:500 11.5px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--mut);display:flex;gap:12px;align-items:center;margin-bottom:14px}
+.kicker::after{content:"";flex:1;height:1px;background:currentColor;opacity:.3}
+h1,h2,h3{font-family:var(--serif);font-weight:600;line-height:1.14;letter-spacing:-.01em;margin:0}
+h1{font-size:clamp(1.7rem,3.3vw,2.5rem);max-width:24ch}
+h2{font-size:clamp(1.3rem,2.2vw,1.7rem);margin-bottom:10px;max-width:40ch}
+h3{font-size:1.05rem;margin-bottom:6px}
+p{margin:0 0 .9em}
+.sub{color:var(--soft);max-width:76ch}
+.mut{color:var(--mut)} .small{font-size:13px}
+.hl{color:var(--flame);font-weight:600}
+.down{font:600 11px var(--mono);letter-spacing:.06em;color:var(--mut);text-decoration:none;white-space:nowrap}
+.down:hover{color:var(--fg)}
+
+/* first screen */
+#aim{padding:24px 0 38px}
+.top{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px 20px;font:500 11.5px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--mut);margin-bottom:34px}
+.top nav{display:flex;flex-wrap:wrap;gap:6px 16px} .top nav a{text-decoration:none} .top nav a:hover{color:var(--fg)}
+.aimgrid{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:40px;align-items:start}
+.answer{margin-top:20px;display:grid;gap:8px}
+.answer div{padding:12px 14px;background:var(--ink2);border-left:3px solid var(--rule)}
+.answer div.main{background:var(--flame-bg);border-left-color:var(--flame);font-size:1.08rem;line-height:1.45}
+.answer small{display:block;font:600 10.5px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--mut);margin-bottom:4px}
+.answer .main small{color:var(--flame)}
+.aims{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.aims li{display:grid;grid-template-columns:92px 1fr;gap:14px;padding:11px 14px;border-left:3px solid var(--rule);background:var(--ink2);color:var(--soft)}
+.aims li b{font:600 11px/1.9 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--mut)}
+.aims li strong{color:var(--fg)}
+.aims li.main{border-left-color:var(--flame);background:var(--flame-bg);color:var(--fg)}
+.aims li.main b{color:var(--flame)}
+
+/* panels */
+.cols{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));margin-top:18px}
+.panel{background:var(--ink2);border:1px solid var(--rule);border-radius:3px;padding:16px}
+section.alt .panel{background:var(--ink)}
+.panel h3{font-family:var(--sans);font-size:13px;font-weight:600;letter-spacing:.02em;color:var(--soft)}
+.bul{margin:10px 0 0;padding-left:18px;color:var(--soft);max-width:80ch} .bul li{margin:4px 0} .bul li strong{color:var(--fg)}
+.funnel{display:grid;gap:6px;margin-top:8px}
+.frow{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;font-size:13px}
+.fbar{height:8px;background:var(--s1);border-radius:0 4px 4px 0;margin-top:3px}
+.frow.drop .fbar{background:var(--axis)}
+.num{font:600 13px var(--mono);font-variant-numeric:tabular-nums}
+
+/* tiles */
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-top:16px}
+.tile{background:var(--ink2);border:1px solid var(--rule);border-radius:3px;padding:14px;cursor:pointer;text-align:left;color:inherit;font:inherit}
+.tile:hover,.tile[aria-pressed=true]{border-color:var(--flame)}
+.tile .big{font:600 30px/1.1 var(--serif)}
+.tile .lbl{font:600 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--mut);margin-bottom:8px}
+.tile .meta{font-size:12.5px;color:var(--soft);margin-top:6px}
+.tile.best{border-left:3px solid var(--flame)}
+.drill{margin-top:12px;background:var(--ink3);border:1px solid var(--rule);border-radius:3px;padding:16px;display:none}
+.drill.open{display:block}
+.drill table{border-collapse:collapse;width:100%;font-size:13px}
+.drill td,.drill th{padding:6px 8px;border-bottom:1px solid var(--rule);text-align:left}
+.drill th{color:var(--mut);font-weight:600}
+.drill .x{float:right;background:none;border:0;color:var(--mut);cursor:pointer;font:600 12px var(--mono)}
+
+/* charts */
+.chartrow{display:grid;grid-template-columns:minmax(0,1fr) 230px;gap:18px;align-items:start;margin-top:16px}
+.legend{font-size:13px;color:var(--soft);display:grid;gap:8px}
+.legend .k{display:flex;gap:8px;align-items:flex-start}
+.sw{display:inline-block;width:12px;height:12px;border-radius:2px;flex:none;margin-top:3px}
+.ln{display:inline-block;width:18px;height:2px;flex:none;margin-top:9px}
+svg text{fill:var(--mut);font:11px var(--sans)}
+svg .lab{fill:var(--soft)}
+.tip{position:fixed;pointer-events:none;background:#000;border:1px solid var(--rule);border-radius:3px;padding:7px 9px;font-size:12.5px;color:var(--fg);z-index:9;display:none;max-width:260px}
+.notobv{margin-top:22px;padding:16px 18px;background:var(--ink2);border:1px solid var(--rule);border-radius:3px}
+section.alt .notobv{background:var(--ink)}
+.notobv .kicker{margin-bottom:8px}
+.notobv ul{margin:0;padding-left:18px} .notobv li{margin:6px 0;color:var(--soft)} .notobv li strong{color:var(--flame)}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:14px}
+.card{background:var(--ink2);border:1px solid var(--rule);border-top:3px solid var(--c);border-radius:3px;padding:14px;cursor:pointer;color:inherit;font:inherit;text-align:left}
+.card:hover,.card[aria-pressed=true]{border-color:var(--c)}
+.card .lbl{font:600 10.5px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--mut)}
+.card h3{margin:4px 0 6px}
+.card p{font-size:13px;color:var(--soft);margin:0}
+.divider{padding:34px 0;background:var(--ink3);text-align:center}
+.divider h2{max-width:none;margin:0 auto 6px}
+.limits li{margin:8px 0}
+.mono{font-family:var(--mono);font-size:12.5px}
+pre{background:var(--ink);border:1px solid var(--rule);border-radius:3px;padding:12px;overflow:auto;font:12.5px/1.5 var(--mono);color:var(--soft)}
+@media (max-width:820px){.aimgrid,.chartrow{grid-template-columns:1fr}.aims li{grid-template-columns:1fr;gap:2px}}
+</style>
+</head>
+<body>
+<div class="tip" id="tip"></div>
+
+<section id="aim"><div class="wrap">
+  <div class="top"><span>predictable-ears · November 2026</span>
+    <nav><a href="#data">Data</a><a href="#results">Results</a><a href="#types">Listener types</a><a href="#smarter">Smarter model</a><a href="#loops">Loops</a><a href="#time">Time of day</a><a href="#how">How ↓</a></nav></div>
+  <div class="aimgrid">
+    <div>
+      <div class="kicker">The question</div>
+      <h1>How predictable is what we listen to?</h1>
+      <p class="sub" style="margin-top:12px">If a one-line rule can guess your next artist, how much of your listening is choice? We tested simple rules on a year of real listening.</p>
+      <div class="answer">
+        <div class="main"><small>Short answer</small><span id="ans-main"></span></div>
+        <div><small>But</small><span id="ans-but"></span></div>
+      </div>
+    </div>
+    <div>
+      <div class="kicker">What we did</div>
+      <ul class="aims">
+        <li><b>Listeners</b><span id="aim-data"></span></li>
+        <li class="main"><b>Rules</b><span><strong>Four one-line guessing rules, no learning:</strong> same artist as last time, your most-played artist, the artist that usually follows this one, and what you usually play at this hour. <a class="down" href="#rules-def">Rules ↓</a></span></li>
+        <li><b>Scoring</b><span>Each rule learns from a listener's first 80% of the year, then guesses the artist of <strong>every</strong> listen in the last 20%. A guess is right if it names any credited artist. <a class="down" href="#method">Method ↓</a></span></li>
+        <li><b>Also</b><span>How often people try new artists, get stuck on one track ("loop days"), and break out. Grouped into listener types.</span></li>
+      </ul>
+    </div>
+  </div>
+</div></section>
+
+<section id="data" class="alt"><div class="wrap">
+  <div class="kicker">The data</div>
+  <h2>A year of listening from 2,000 random, active ListenBrainz users</h2>
+  <ul class="bul" id="data-bul"></ul>
+  <div class="cols">
+    <div class="panel"><h3>Who made it into the sample</h3><div class="funnel" id="funnel"></div></div>
+    <div class="panel"><h3>How much each listener played in the year</h3><svg id="vol" width="100%" height="170"></svg><p class="small mut" id="vol-note"></p></div>
+    <div class="panel"><h3>What cleaning did</h3><div class="funnel" id="cleaning"></div><p class="small mut" style="margin-top:10px">Collaborations count for every credited artist: “BTS, Halsey” counts for both. <a class="down" href="#identity">Artist rules ↓</a></p></div>
+  </div>
+</div></section>
+
+<section id="results"><div class="wrap">
+  <div class="kicker">Results</div>
+  <h2 id="res-h2"></h2>
+  <p class="sub">Each tile is one rule: the share of next artists it guessed right, for the typical (median) listener. <strong>Click a tile</strong> to see where that rule works and where it fails.</p>
+  <div class="tiles" id="rule-tiles"></div>
+  <div class="drill" id="rule-drill"></div>
+  <div class="chartrow">
+    <svg id="hist" width="100%" height="260"></svg>
+    <div class="legend" id="hist-legend"></div>
+  </div>
+  <div class="notobv"><div class="kicker">Not obvious from the numbers</div><ul id="nob-results"></ul></div>
+</div></section>
+
+<section id="types" class="alt"><div class="wrap">
+  <div class="kicker">Listener types</div>
+  <h2 id="types-h2"></h2>
+  <p class="sub">Each dot is a group of listeners with the same predictability and exploration (no individual is shown). Colour is the listener type, found by clustering five measures. <strong>Click a card</strong> for the type's numbers.</p>
+  <div class="chartrow">
+    <svg id="scatter" width="100%" height="320"></svg>
+    <div class="legend" id="scatter-legend"></div>
+  </div>
+  <div class="cards" id="type-cards"></div>
+  <div class="drill" id="type-drill"></div>
+  <div class="notobv"><div class="kicker">Not obvious from the numbers</div><ul id="nob-types"></ul></div>
+</div></section>
+
+<section id="smarter"><div class="wrap">
+  <div class="kicker">Is a smarter model much better?</div>
+  <h2 id="smart-h2"></h2>
+  <p class="sub">Three numbers per typical listener: the best single rule, a learned mix of all four rules (weights fitted per listener), and the ceiling: listens where <em>any</em> rule's first guess was right, which no mix of these rules can beat.</p>
+  <div class="chartrow">
+    <svg id="smart" width="100%" height="170"></svg>
+    <div class="legend" id="smart-legend"></div>
+  </div>
+  <div class="notobv"><div class="kicker">Not obvious from the numbers</div><ul id="nob-smart"></ul></div>
+</div></section>
+
+<section id="loops" class="alt"><div class="wrap">
+  <div class="kicker">Loops and breakouts</div>
+  <h2 id="loops-h2"></h2>
+  <p class="sub">A <strong>loop day</strong>: one track is at least 30% of the day's plays and at least 5 plays. A <strong>breakout month</strong>: first-time artists well above that listener's own normal (more than 2 SD).</p>
+  <div class="tiles" id="loop-tiles"></div>
+  <div class="notobv"><div class="kicker">Not obvious from the numbers</div><ul id="nob-loops"></ul></div>
+</div></section>
+
+<section id="time"><div class="wrap">
+  <div class="kicker">Time of day</div>
+  <h2 id="time-h2"></h2>
+  <p class="sub">ListenBrainz has no timezone or location. The blue line treats everyone as UTC. The orange line shifts each listener so their quietest (sleeping) hours fall at 5 a.m. local, an estimate from their own daily rhythm.</p>
+  <div class="chartrow">
+    <svg id="tod" width="100%" height="240"></svg>
+    <div class="legend" id="tod-legend"></div>
+  </div>
+  <div class="notobv"><div class="kicker">Not obvious from the numbers</div><ul id="nob-time"></ul></div>
+</div></section>
+
+<section class="divider" id="how"><div class="wrap">
+  <h2>That is the result. Everything below is the how.</h2>
+  <p class="mut" style="margin:0">Optional reading: method, definitions, limits, cost and how to reproduce.</p>
+</div></section>
+
+<section id="method"><div class="wrap">
+  <div class="kicker">Method</div>
+  <h2>How it was measured</h2>
+  <ul class="bul" id="method-bul"></ul>
+  <h3 id="rules-def" style="margin-top:22px">The four rules</h3>
+  <ul class="bul">
+    <li><strong>Same as last:</strong> guess the artist of the previous listen (top-5: the five most recent distinct artists).</li>
+    <li><strong>Most played:</strong> guess the listener's most-played artist in their training period.</li>
+    <li><strong>Usually next:</strong> guess the artist that most often followed the current one in training, else most played.</li>
+    <li><strong>This hour:</strong> guess the most-played artist in this hour of the week (168 buckets) in training, else most played.</li>
+  </ul>
+  <h3 id="identity" style="margin-top:22px">Who counts as an artist</h3>
+  <ul class="bul" id="identity-bul"></ul>
+</div></section>
+
+<section id="limits" class="alt"><div class="wrap">
+  <div class="kicker">Read with care</div>
+  <h2>Limits</h2>
+  <ul class="bul limits">
+    <li><strong>What played, not why.</strong> Your own picks, autoplay and algorithmic playlists look the same in this data. High predictability can mean habit or a recommender doing the choosing.</li>
+    <li><strong>No skips.</strong> ListenBrainz records a listen after about 30 seconds or half the track; skips before that are invisible.</li>
+    <li><strong>A self-selected crowd.</strong> People who set up ListenBrainz are music-nerdy and heavy listeners (3,000+ listens a year was required).</li>
+    <li><strong>Mixed services.</strong> Spotify, Last.fm imports, local players and more, all mixed together.</li>
+    <li><strong>No timezones.</strong> All times are UTC; the local-time view is an estimate.</li>
+    <li><strong>One year.</strong> Trends within the year are weak evidence (seasonality, one window).</li>
+    <li><strong>Artist splitting is imperfect.</strong> “You &amp; I” becomes two artists; parenthesised credits are not split. Well under 0.1% of listens.</li>
+  </ul>
+</div></section>
+
+<section id="cost"><div class="wrap">
+  <div class="kicker">Cost and reproducing</div>
+  <h2>What it took</h2>
+  <ul class="bul" id="cost-bul"></ul>
+  <pre>python src/pears/cli.py download   # tail of the spark dump, by HTTP range requests
+python src/pears/cli.py ingest     # month by month: user stats, bot filter, sample of 2,000
+python src/pears/cli.py clean      # artists, duplicates, sessions
+python src/pears/cli.py metrics    # per-listener metrics (local only)
+python src/pears/cli.py smarter    # learned mix of the rules
+python src/pears/cli.py population # aggregates → this page
+python src/pears/site.py           # builds docs/index.html</pre>
+  <p class="small mut">Code, metric definitions (<code>METRICS.md</code>) and tests: <a href="https://github.com/atharva-729/predictable-ears">github.com/atharva-729/predictable-ears</a>.
+  Listening data from <a href="https://listenbrainz.org">ListenBrainz</a>, a MetaBrainz Foundation project, released under CC0. No individual listener is shown on this page; all figures are aggregates over the 2,000 sampled users.</p>
+</div></section>
+
+<script>
+const D = /*DATA*/;
+</script>
+<script>
+(() => {
+const P = D.pop, H = P.headline, $ = (id) => document.getElementById(id);
+const pct = (x, d = 0) => x == null ? "–" : (100 * x).toFixed(d) + "%";
+const n0 = (x) => Math.round(x).toLocaleString("en");
+const RULE = { repeat_last: "Same as last", most_frequent: "Most played", markov1: "Usually next", time_of_day: "This hour" };
+const COL = ["var(--s1)", "var(--s2)", "var(--s3)", "var(--s4)", "var(--s5)"];
+const tip = $("tip");
+const showTip = (e, html) => { tip.innerHTML = html; tip.style.display = "block"; tip.style.left = Math.min(e.clientX + 14, innerWidth - 270) + "px"; tip.style.top = (e.clientY + 14) + "px"; };
+const hideTip = () => { tip.style.display = "none"; };
+const svgW = (svg) => svg.clientWidth || svg.parentNode.clientWidth || 700;
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const fill = (id, html) => { const el = $(id); if (el) el.innerHTML = html; };
+const lis = (arr) => arr.map((x) => `<li>${x}</li>`).join("");
+window.PE = { D, pct, n0, RULE, fill, lis };
+
+/* ---------- numbers used in text ---------- */
+const med1 = H.predictability_top1.median, med5 = H.predictability_top5.median;
+const rules = P.rules.rules, bestRule = rules.slice().sort((a, b) => b.wins_share - a.wins_share)[0];
+fill("aim-data", `<strong>${n0(D.funnel.sampled)} listeners</strong>, picked at random from ${n0(D.funnel.eligible)} active ListenBrainz users. ${n0(D.clean.rows_out)} listens, Nov 2025 – Oct 2026. <a class="down" href="#data">Data ↓</a>`);
+
+/* ---------- data panels ---------- */
+const F = D.funnel, st = F.by_status;
+const frows = [
+  ["Users with any listen in the 12 months", F.window_users, false],
+  ["Fewer than 3,000 listens", -(st.too_few_listens || 0), true],
+  ["Active in fewer than 10 months", -(st.too_few_active_months || 0), true],
+  ["Likely bots or bulk imports", -((st.bot_fast_day || 0) + (st.bot_day_volume || 0) + (st.bot_identical_ts || 0)), true],
+  ["Eligible", F.eligible, false],
+  ["Random sample", F.sampled, false],
+];
+fill("funnel", frows.map(([l, v, drop]) => `<div class="frow ${drop ? "drop" : ""}"><div>${l}<div class="fbar" style="width:${Math.max(1, 100 * Math.abs(v) / F.window_users)}%"></div></div><span class="num">${drop ? "−" : ""}${n0(Math.abs(v))}</span></div>`).join(""));
+const C = D.clean;
+const crows = [
+  ["Listens from the 2,000", C.rows_in, false],
+  ["Duplicates (same track within 30 s)", -C.dedupe_removed, true],
+  ["Placeholder artist, not recoverable", -(C.unknown_rows - C.unknown_recovered_rows), true],
+  ["Listens used", C.rows_out, false],
+];
+fill("cleaning", crows.map(([l, v, drop]) => `<div class="frow ${drop ? "drop" : ""}"><div>${l}<div class="fbar" style="width:${Math.max(1, 100 * Math.abs(v) / C.rows_in)}%"></div></div><span class="num">${drop ? "−" : ""}${n0(Math.abs(v))}</span></div>`).join(""));
+
+function histogram(svg, edges, counts, { fmt, median, medianLabel, color = "var(--s1)", xLabel }) {
+  const W = svgW(svg), Hh = +svg.getAttribute("height"), m = { l: 8, r: 8, t: 22, b: 34 };
+  const iw = W - m.l - m.r, ih = Hh - m.t - m.b, maxC = Math.max(...counts), lo = edges[0], hi = edges[edges.length - 1];
+  const x = (v) => m.l + ((v - lo) / (hi - lo)) * iw, bw = iw / counts.length;
+  let s = `<line x1="${m.l}" x2="${W - m.r}" y1="${m.t + ih}" y2="${m.t + ih}" stroke="var(--axis)"/>`;
+  counts.forEach((c, i) => {
+    const h = (c / maxC) * ih;
+    if (c) s += `<rect data-i="${i}" x="${x(edges[i]) + 1}" y="${m.t + ih - h}" width="${Math.max(1, bw - 2)}" height="${h}" rx="2" fill="${color}"/>`;
+    s += `<rect data-i="${i}" x="${x(edges[i])}" y="${m.t}" width="${bw}" height="${ih}" fill="transparent"/>`;
+  });
+  for (let k = 0; k <= 4; k++) { const v = lo + (k / 4) * (hi - lo); s += `<text x="${x(v)}" y="${Hh - 18}" text-anchor="${k === 0 ? "start" : k === 4 ? "end" : "middle"}">${fmt(v)}</text>`; }
+  if (xLabel) s += `<text x="${m.l + iw / 2}" y="${Hh - 3}" text-anchor="middle">${xLabel}</text>`;
+  if (median != null) { const mx = x(median); s += `<line x1="${mx}" x2="${mx}" y1="${m.t - 6}" y2="${m.t + ih}" stroke="var(--flame)" stroke-width="2"/><text class="lab" x="${mx + 5}" y="${m.t - 9}">${medianLabel}</text>`; }
+  svg.innerHTML = s;
+  svg.onmousemove = (e) => { const i = e.target.dataset && e.target.dataset.i; if (i == null) return hideTip(); showTip(e, `${fmt(edges[i])} – ${fmt(edges[+i + 1])}<br><b>${counts[i]}</b> listeners`); };
+  svg.onmouseleave = hideTip;
+}
+const V = D.volume;
+histogram($("vol"), V.log10_edges, V.counts, { fmt: (v) => n0(10 ** v), median: Math.log10(V.median), medianLabel: `median ${n0(V.median)}`, xLabel: "listens in the year (log scale)" });
+fill("vol-note", `Middle half: ${n0(V.q1)}–${n0(V.q3)} listens. Heaviest: ${n0(V.max)}. Everyone needed ≥ 3,000 listens and activity in ≥ 10 of 12 months; counts here are after cleaning, so a few sit just below.`);
+
+/* ---------- rule tiles + drill ---------- */
+fill("rule-tiles", rules.map((r) => `<button class="tile ${r === bestRule ? "best" : ""}" data-rule="${r.rule}" aria-pressed="false">
+  <div class="lbl">${RULE[r.rule]}</div><div class="big">${pct(r.top1_median)}</div>
+  <div class="meta">${pct(r.top5_median)} within 5 guesses · best rule for <b>${pct(r.wins_share, r.wins_share < .01 ? 1 : 0)}</b> of listeners</div></button>`).join(""));
+document.querySelectorAll("#rule-tiles .tile").forEach((t) => t.onclick = () => {
+  const r = rules.find((x) => x.rule === t.dataset.rule), dr = $("rule-drill"), was = t.getAttribute("aria-pressed") === "true";
+  document.querySelectorAll("#rule-tiles .tile").forEach((x) => x.setAttribute("aria-pressed", "false"));
+  if (was) { dr.classList.remove("open"); return; }
+  t.setAttribute("aria-pressed", "true");
+  const types = Object.entries(r.by_type).sort((a, b) => b[1] - a[1]);
+  const vt = P.rules.volume_terciles;
+  dr.innerHTML = `<button class="x" onclick="this.parentNode.classList.remove('open')">close ✕</button>
+    <h3>${RULE[r.rule]}: right ${pct(r.top1_median)} of the time for the typical listener</h3>
+    <p class="small mut">Middle half of listeners: ${pct(r.top1_q1)}–${pct(r.top1_q3)}. Median hit rate within each group:</p>
+    <div class="cols" style="margin-top:6px">
+      <table><tr><th>Listener type</th><th>Right</th></tr>${types.map(([k, v]) => `<tr><td>${esc(k)}</td><td class="num">${pct(v)}</td></tr>`).join("")}</table>
+      <table><tr><th>Listening volume</th><th>Right</th></tr>${Object.entries(r.by_volume).map(([k, v]) => `<tr><td>${k} third (${n0(vt[k][0])}–${n0(vt[k][1])} listens)</td><td class="num">${pct(v)}</td></tr>`).join("")}</table>
+    </div>`;
+  dr.classList.add("open");
+});
+
+const ph = P.histograms.predictability_top1;
+histogram($("hist"), ph.edges, ph.counts, { fmt: (v) => pct(v), median: ph.median, medianLabel: `typical listener: ${pct(ph.median)}`, color: "var(--s1)", xLabel: "share of next artists guessed by that listener's best rule" });
+fill("hist-legend", `<div class="k"><span class="sw" style="background:var(--s1)"></span><span>Listeners, by how often their best one-line rule guessed the next artist.</span></div>
+  <div class="k"><span class="ln" style="background:var(--flame)"></span><span>The typical (median) listener.</span></div>
+  <div class="k mut small">Hover a bar for its count. ${pct(H.share_top1_over_50)} of listeners are above 50%.</div>`);
+
+/* ---------- listener types ---------- */
+const T = P.clusters.table, tcol = Object.fromEntries(T.map((c, i) => [c.cluster, COL[i]]));
+function scatter(svg) {
+  const pts = P.clusters.scatter_binned, W = svgW(svg), Hh = +svg.getAttribute("height"), m = { l: 44, r: 12, t: 12, b: 38 };
+  const iw = W - m.l - m.r, ih = Hh - m.t - m.b;
+  const xmax = Math.min(1, Math.max(...pts.map((p) => p.px)) + .04), ymax = Math.min(1, Math.max(...pts.map((p) => p.ex)) + .02);
+  const x = (v) => m.l + (v / xmax) * iw, y = (v) => m.t + ih - (v / ymax) * ih, nmax = Math.max(...pts.map((p) => p.n));
+  let s = "";
+  for (let k = 0; k <= 4; k++) { const v = (k / 4) * xmax; s += `<line x1="${x(v)}" x2="${x(v)}" y1="${m.t}" y2="${m.t + ih}" stroke="var(--grid)"/><text x="${x(v)}" y="${Hh - 22}" text-anchor="middle">${pct(v)}</text>`; }
+  for (let k = 0; k <= 4; k++) { const v = (k / 4) * ymax; s += `<line x1="${m.l}" x2="${W - m.r}" y1="${y(v)}" y2="${y(v)}" stroke="var(--grid)"/><text x="${m.l - 6}" y="${y(v) + 4}" text-anchor="end">${pct(v)}</text>`; }
+  s += `<text x="${m.l + iw / 2}" y="${Hh - 4}" text-anchor="middle">predictability (best rule, top-1) →</text>`;
+  s += `<text transform="translate(11 ${m.t + ih / 2}) rotate(-90)" text-anchor="middle">exploration (first-time artists) →</text>`;
+  pts.forEach((p, i) => { s += `<circle data-i="${i}" cx="${x(p.px)}" cy="${y(p.ex)}" r="${3 + 6 * Math.sqrt(p.n / nmax)}" fill="${tcol[p.cluster]}" fill-opacity=".8" stroke="var(--ink2)" stroke-width="2"/>`; });
+  svg.innerHTML = s;
+  svg.onmousemove = (e) => { const i = e.target.dataset && e.target.dataset.i; if (i == null) return hideTip(); const p = pts[i]; showTip(e, `<b>${esc(p.cluster)}</b><br>${p.n} listener${p.n > 1 ? "s" : ""} near ${pct(p.px)} predictable, ${pct(p.ex)} exploring`); };
+  svg.onmouseleave = hideTip;
+}
+scatter($("scatter"));
+fill("scatter-legend", T.map((c) => `<div class="k"><span class="sw" style="background:${tcol[c.cluster]};border-radius:50%"></span><span><b>${esc(c.cluster)}</b> · ${pct(c.share)} of listeners</span></div>`).join("") + `<div class="k mut small">Dot size: number of listeners at that spot. Clusters picked k = ${P.clusters.k} by silhouette.</div>`);
+fill("type-cards", P.composites.map((c) => `<button class="card" style="--c:${tcol[c.name]}" data-name="${esc(c.name)}" aria-pressed="false"><div class="lbl">${pct(c.share)} of listeners · composite, not a real person</div><h3>${esc(c.name)}</h3><p>${esc(c.line)}</p></button>`).join(""));
+document.querySelectorAll("#type-cards .card").forEach((b) => b.onclick = () => {
+  const c = T.find((x) => x.cluster === b.dataset.name), dr = $("type-drill"), was = b.getAttribute("aria-pressed") === "true";
+  document.querySelectorAll("#type-cards .card").forEach((x) => x.setAttribute("aria-pressed", "false"));
+  if (was) { dr.classList.remove("open"); return; }
+  b.setAttribute("aria-pressed", "true");
+  const rows = [["Next artist guessed (best rule)", pct(c.predictability_top1), pct(H.predictability_top1.median)],
+    ["…within 5 guesses", pct(c.predictability_top5), pct(H.predictability_top5.median)],
+    ["Effective number of artists", n0(c.effective_artists), n0(H.effective_artists.median)],
+    ["Plays that are a first-time artist", pct(c.exploration_rate, 1), pct(H.exploration_rate.median, 1)],
+    ["Plays going to their top 10 artists", pct(c.concentration_top10), pct(H.concentration_top10.median)],
+    ["Loop days per month", c.loop_days_per_month.toFixed(1), H.loop_days_per_month.median.toFixed(1)]];
+  const wins = Object.entries(c.best_rule_share).sort((a, b) => b[1] - a[1]).map(([k, v]) => `${RULE[k]} ${pct(v)}`).join(" · ");
+  dr.innerHTML = `<button class="x" onclick="this.parentNode.classList.remove('open')">close ✕</button><h3>${esc(c.cluster)}: ${n0(c.n)} listeners</h3>
+    <table><tr><th>Median of the group</th><th>${esc(c.cluster)}</th><th>All listeners</th></tr>${rows.map((r) => `<tr><td>${r[0]}</td><td class="num">${r[1]}</td><td class="num mut">${r[2]}</td></tr>`).join("")}</table>
+    <p class="small mut" style="margin-top:10px">Which rule guesses this group best: ${wins}.</p>`;
+  dr.classList.add("open");
+});
+
+/* ---------- smarter model ---------- */
+const S = D.smarter;
+function dots(svg) {
+  const rows = [["Best single rule", S.best_single_median, "var(--s1)"], ["Learned mix of the four", S.mixture_median, "var(--s3)"], ["Ceiling: any rule right", S.oracle_median, "var(--s2)"]];
+  const W = svgW(svg), Hh = +svg.getAttribute("height"), m = { l: 170, r: 50, t: 10, b: 28 }, iw = W - m.l - m.r, rh = (Hh - m.t - m.b) / rows.length;
+  const xmax = Math.min(1, Math.ceil(Math.max(...rows.map((r) => r[1])) * 10) / 10 + .1), x = (v) => m.l + (v / xmax) * iw;
+  let s = "";
+  for (let k = 0; k <= 5; k++) { const v = (k / 5) * xmax; s += `<line x1="${x(v)}" x2="${x(v)}" y1="${m.t}" y2="${Hh - m.b}" stroke="var(--grid)"/><text x="${x(v)}" y="${Hh - 10}" text-anchor="middle">${pct(v)}</text>`; }
+  rows.forEach(([l, v, c], i) => { const cy = m.t + rh * (i + .5); s += `<text class="lab" x="${m.l - 10}" y="${cy + 4}" text-anchor="end">${l}</text><line x1="${x(0)}" x2="${x(v)}" y1="${cy}" y2="${cy}" stroke="${c}" stroke-width="2"/><circle cx="${x(v)}" cy="${cy}" r="6" fill="${c}" stroke="var(--ink)" stroke-width="2"/><text class="lab" x="${x(v) + 10}" y="${cy + 4}">${pct(v, 1)}</text>`; });
+  svg.innerHTML = s;
+}
+dots($("smart"));
+fill("smart-legend", `<div class="k mut small">Medians over ${n0(S.n_users)} listeners, same split as the headline. Mix weights are chosen on a held-out slice of each listener's training period.</div>`);
+
+/* ---------- loops ---------- */
+const LB = P.loop_breakout;
+fill("loop-tiles", [
+  ["Loop days a month", H.loop_days_per_month.median.toFixed(1), `typical listener · middle half ${H.loop_days_per_month.q1.toFixed(1)}–${H.loop_days_per_month.q3.toFixed(1)}`],
+  ["Listeners with a breakout month", pct(H.share_with_breakout), "at least one month of unusually many new artists"],
+  ["Breakout soon after a loop-heavy month", pct(LB.breakout_rate_after_high_loop, 1), `within 2 months, after ${n0(LB.n_high_loop_months)} months with ≥ ${LB.high_loop_days_threshold} loop days`],
+  ["…after any other month", pct(LB.breakout_rate_after_other, 1), `${n0(LB.n_other_months)} months`],
+].map(([l, b, m]) => `<div class="tile" style="cursor:default"><div class="lbl">${l}</div><div class="big">${b}</div><div class="meta">${m}</div></div>`).join(""));
+
+/* ---------- time of day ---------- */
+const TP = P.time_patterns;
+function lines(svg) {
+  const series = [["UTC for everyone", TP.utc.predictability_by_hour, "var(--s1)"], ["Estimated local time", TP.local.predictability_by_hour, "var(--s2)"]];
+  const W = svgW(svg), Hh = +svg.getAttribute("height"), m = { l: 44, r: 12, t: 12, b: 34 }, iw = W - m.l - m.r, ih = Hh - m.t - m.b;
+  // axis from 0: the point is how flat the line is, so do not zoom into a few points
+  const all = series.flatMap((s) => s[1]).filter((v) => v != null), lo = 0, hi = Math.min(1, Math.ceil(Math.max(...all) * 10) / 10 + .1);
+  const x = (h) => m.l + (h / 23) * iw, y = (v) => m.t + ih - ((v - lo) / (hi - lo || 1)) * ih;
+  let s = "";
+  for (let k = 0; k <= 4; k++) { const v = lo + (k / 4) * (hi - lo); s += `<line x1="${m.l}" x2="${W - m.r}" y1="${y(v)}" y2="${y(v)}" stroke="var(--grid)"/><text x="${m.l - 6}" y="${y(v) + 4}" text-anchor="end">${pct(v, 0)}</text>`; }
+  for (let h = 0; h < 24; h += 3) s += `<text x="${x(h)}" y="${Hh - 16}" text-anchor="middle">${String(h).padStart(2, "0")}:00</text>`;
+  s += `<text x="${m.l + iw / 2}" y="${Hh - 2}" text-anchor="middle">hour of day</text>`;
+  series.forEach(([l, v, c]) => { const d = v.map((p, h) => p == null ? null : `${x(h)},${y(p)}`).filter(Boolean).join(" L"); s += `<path d="M${d}" fill="none" stroke="${c}" stroke-width="2"/>`; });
+  s += `<line id="tod-x" y1="${m.t}" y2="${m.t + ih}" stroke="var(--mut)" style="display:none"/>`;
+  svg.innerHTML = s;
+  svg.onmousemove = (e) => { const r = svg.getBoundingClientRect(), h = Math.max(0, Math.min(23, Math.round(((e.clientX - r.left - m.l) / iw) * 23))); const ln = svg.querySelector("#tod-x"); ln.setAttribute("x1", x(h)); ln.setAttribute("x2", x(h)); ln.style.display = ""; showTip(e, `<b>${String(h).padStart(2, "0")}:00</b><br>${series.map(([l, v]) => `${l}: ${pct(v[h], 1)}`).join("<br>")}`); };
+  svg.onmouseleave = () => { hideTip(); svg.querySelector("#tod-x").style.display = "none"; };
+}
+lines($("tod"));
+fill("tod-legend", `<div class="k"><span class="ln" style="background:var(--s1)"></span><span>UTC for everyone (no timezone data)</span></div>
+  <div class="k"><span class="ln" style="background:var(--s2)"></span><span>Estimated local time</span></div>
+  <div class="k mut small">Share of next artists guessed by each listener's best rule, by hour. Hover for values.</div>`);
+
+addEventListener("resize", () => { histogram($("vol"), V.log10_edges, V.counts, { fmt: (v) => n0(10 ** v), median: Math.log10(V.median), medianLabel: `median ${n0(V.median)}`, xLabel: "listens in the year (log scale)" }); histogram($("hist"), ph.edges, ph.counts, { fmt: (v) => pct(v), median: ph.median, medianLabel: `typical listener: ${pct(ph.median)}`, xLabel: "share of next artists guessed by that listener's best rule" }); scatter($("scatter")); dots($("smart")); lines($("tod")); });
+})();
+</script>
+<script>
+/* ---------- written findings (filled from the numbers; see RUN_LOG) ---------- */
+(() => { const { D, pct, n0, RULE, fill, lis } = window.PE;
+/*NARRATIVE*/
+})();
+</script>
+</body>
+</html>
