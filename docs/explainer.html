@@ -1,0 +1,489 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="The whole Predictable Ears project explained: idea, theory, data, plan vs reality, results, conclusions and business sense.">
+<title>Predictable Ears Explained</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* Layout: "liner notes". One 68ch reading column, a sticky index rail on wide screens,
+   figures that break out to the full width. Cool paper, cobalt for structure, amber for
+   the one thing to remember in each section. */
+:root{
+  --paper:#f4f6f8; --sheet:#ffffff; --ink:#151821; --ink-2:#434a5a; --mute:#6b7385;
+  --line:#d9dee6; --cobalt:#2446c7; --cobalt-soft:#e3e9fb; --amber:#a86400; --amber-soft:#fbf0dc;
+  --hit:#1d7a4a; --miss:#b3372f;
+  --a1:#2446c7; --a2:#c2571a; --a3:#1f8a68; --a4:#8a5cc7; --a5:#9aa3b5;
+  --display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
+  --body:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#11141b; --sheet:#181c25; --ink:#e9ecf2; --ink-2:#b8bfcc; --mute:#8b93a5;
+  --line:#2b313d; --cobalt:#8ea6ff; --cobalt-soft:#1d2540; --amber:#f0b257; --amber-soft:#2e2414;
+  --hit:#5cc993; --miss:#ff7d72;
+  --a1:#7d97ff; --a2:#ef8a4f; --a3:#4cc39b; --a4:#b48cf0; --a5:#6f788b; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#11141b; --sheet:#181c25; --ink:#e9ecf2; --ink-2:#b8bfcc; --mute:#8b93a5;
+  --line:#2b313d; --cobalt:#8ea6ff; --cobalt-soft:#1d2540; --amber:#f0b257; --amber-soft:#2e2414;
+  --hit:#5cc993; --miss:#ff7d72;
+  --a1:#7d97ff; --a2:#ef8a4f; --a3:#4cc39b; --a4:#b48cf0; --a5:#6f788b; color-scheme:dark}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+body{background:var(--paper);color:var(--ink);font:17px/1.62 var(--body);margin:0}
+a{color:var(--cobalt);text-underline-offset:2px}
+a:focus-visible,button:focus-visible{outline:2px solid var(--cobalt);outline-offset:2px;border-radius:3px}
+.page{max-width:1160px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 80px;display:grid;grid-template-columns:200px minmax(0,1fr);gap:48px}
+nav.rail{position:sticky;top:calc(env(safe-area-inset-top,0px) + 20px);align-self:start;font:13px/1.5 var(--display);display:grid;gap:2px}
+nav.rail b{font:600 11px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--mute);margin-bottom:6px}
+nav.rail a{color:var(--ink-2);text-decoration:none;padding:3px 0 3px 10px;border-left:2px solid var(--line)}
+nav.rail a:hover{color:var(--ink);border-left-color:var(--cobalt)}
+main{min-width:0}
+.col{max-width:68ch}
+h1,h2,h3{font-family:var(--display);font-weight:700;letter-spacing:-.015em;line-height:1.12;text-wrap:balance;margin:0}
+h1{font-size:clamp(2rem,4.2vw,3rem)}
+h2{font-size:clamp(1.45rem,2.6vw,1.9rem);margin-bottom:14px}
+h3{font-size:1.12rem;font-weight:500;margin:26px 0 8px}
+p{margin:0 0 14px}
+.eyebrow{font:600 11.5px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--cobalt);margin-bottom:10px}
+section{padding-block:44px;border-top:1px solid var(--line)}
+section:first-of-type{border-top:0;padding-top:8px}
+.lede{font-size:1.15rem;color:var(--ink-2)}
+.key{background:var(--amber-soft);border-left:4px solid var(--amber);padding:14px 18px;margin:18px 0;border-radius:0 6px 6px 0}
+.key b{color:var(--amber)}
+ul.tight{margin:0 0 14px;padding-left:20px} ul.tight li{margin:5px 0}
+.mono{font-family:var(--mono);font-size:.86em}
+.note{font-size:14px;color:var(--mute)}
+/* first screen */
+.opener{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:32px;align-items:start;margin-top:18px}
+.approach{list-style:none;margin:0;padding:0;display:grid;gap:8px;font-size:15.5px}
+.approach li{background:var(--sheet);border:1px solid var(--line);border-radius:6px;padding:11px 14px;display:grid;grid-template-columns:84px minmax(0,1fr);gap:12px}
+.approach li span:first-child{font:600 11px/1.9 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
+.approach li.main{border-color:var(--amber);background:var(--amber-soft)}
+.approach li.main span:first-child{color:var(--amber)}
+.answer{font:500 1.35rem/1.35 var(--display);margin:18px 0 10px}
+.answer em{font-style:normal;color:var(--amber)}
+/* figures */
+figure{margin:22px 0;background:var(--sheet);border:1px solid var(--line);border-radius:8px;padding:18px}
+figcaption{font-size:14px;color:var(--mute);margin-top:10px}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:600 12px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}
+td.n{font-family:var(--mono);font-size:14px;font-variant-numeric:tabular-nums;white-space:nowrap}
+tr.hl td{background:var(--amber-soft)}
+.bars{display:grid;gap:9px}
+.bar{display:grid;grid-template-columns:150px minmax(0,1fr) 64px;gap:12px;align-items:center;font-size:14.5px}
+.bar .track{height:12px;background:var(--cobalt-soft);border-radius:3px;position:relative}
+.bar .fillb{position:absolute;inset:0 auto 0 0;background:var(--cobalt);border-radius:3px}
+.bar .v{font:600 13px var(--mono);text-align:right;font-variant-numeric:tabular-nums}
+.bar.amber .fillb{background:var(--amber)}
+/* toy demo */
+.toy .legend{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:13.5px;margin-bottom:12px}
+.chip{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:5px;color:#fff;font:600 12px var(--mono);flex:none}
+.strip{display:flex;gap:4px;flex-wrap:wrap;align-items:flex-end}
+.slot{display:grid;gap:4px;justify-items:center}
+.slot .t{font:10.5px var(--mono);color:var(--mute)}
+.divline{width:2px;align-self:stretch;background:var(--ink-2);margin:0 6px;border-radius:1px}
+.rules{display:flex;flex-wrap:wrap;gap:6px;margin:16px 0 10px}
+.rules button{font:600 13px var(--display);border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:999px;padding:6px 12px;cursor:pointer}
+.rules button[aria-pressed="true"]{background:var(--cobalt);border-color:var(--cobalt);color:var(--sheet)}
+.guessrow{display:flex;gap:4px;flex-wrap:wrap;margin-top:6px}
+.mark{font:700 13px var(--mono)}
+.mark.h{color:var(--hit)} .mark.m{color:var(--miss)}
+.score{font:600 15px var(--display);margin-top:10px}
+/* pipeline */
+.flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.step{background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:12px;font-size:14px}
+.step b{display:block;font:700 14.5px var(--display);margin-bottom:4px}
+.step .io{font:12px var(--mono);color:var(--cobalt)}
+.step .tm{font:12px var(--mono);color:var(--mute)}
+/* timeline */
+ol.timeline{list-style:none;margin:0;padding:0;counter-reset:t;display:grid;gap:10px}
+ol.timeline li{counter-increment:t;display:grid;grid-template-columns:34px minmax(0,1fr);gap:12px}
+ol.timeline li::before{content:counter(t);font:700 13px var(--mono);color:var(--cobalt);background:var(--cobalt-soft);border-radius:50%;width:28px;height:28px;display:grid;place-items:center}
+ol.timeline li.bad::before{color:var(--miss);background:var(--amber-soft)}
+.types{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
+.type{background:var(--paper);border:1px solid var(--line);border-top:4px solid var(--c);border-radius:6px;padding:12px;font-size:14.5px}
+.type b{font:700 15px var(--display);display:block}
+.type .pc{font:12px var(--mono);color:var(--mute)}
+.verdict{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px}
+.verdict div{background:var(--sheet);border:1px solid var(--line);border-radius:6px;padding:14px;font-size:15px}
+.verdict h4{margin:0 0 6px;font:700 14px var(--display)}
+.verdict .tag{font:600 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;border-radius:3px;margin-left:6px}
+.tag.yes{background:var(--cobalt-soft);color:var(--cobalt)} .tag.maybe{background:var(--amber-soft);color:var(--amber)} .tag.no{background:var(--line);color:var(--ink-2)}
+dl.gloss{display:grid;grid-template-columns:minmax(120px,190px) minmax(0,1fr);gap:8px 18px;font-size:15.5px}
+dl.gloss dt{font:600 14px var(--display)} dl.gloss dd{margin:0;color:var(--ink-2)}
+.formula{font:15px var(--mono);background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:10px 14px;margin:10px 0 14px;overflow-x:auto}
+@media (max-width:900px){.page{grid-template-columns:minmax(0,1fr);gap:0}nav.rail{position:static;grid-auto-flow:row;margin-bottom:10px;display:none}.opener{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:520px){.bar{grid-template-columns:96px minmax(0,1fr) 54px}.approach li{grid-template-columns:minmax(0,1fr);gap:2px}dl.gloss{grid-template-columns:minmax(0,1fr)}}
+</style>
+</head>
+<body>
+
+<div class="page">
+<nav class="rail" aria-label="Sections">
+  <b>Contents</b>
+  <a href="#start">The question</a>
+  <a href="#idea">Where it started</a>
+  <a href="#theory">How it works</a>
+  <a href="#data">The data</a>
+  <a href="#plan">Plan vs reality</a>
+  <a href="#build">How it was built</a>
+  <a href="#story">What happened</a>
+  <a href="#results">Results</a>
+  <a href="#conclusions">Conclusions</a>
+  <a href="#business">Business sense</a>
+  <a href="#next">What next</a>
+  <a href="#limits">Limits</a>
+  <a href="#glossary">Glossary</a>
+</nav>
+
+<main>
+<section id="start">
+  <div class="eyebrow">Predictable Ears · explainer · November 2026</div>
+  <h1>How much of what we listen to could a one-line rule guess?</h1>
+  <div class="opener">
+    <div>
+      <p class="answer">A rule that says <em>“same artist as last time”</em> guesses the typical listener's next artist <em>35%</em> of the time. Nothing smarter we tried did better.</p>
+      <p class="lede">This page explains the whole project: the idea, the theory, the data, what went to plan and what did not, the results, and whether any of it is worth building on.</p>
+      <p class="note">Results page with the charts: <a href="https://atharva-729.github.io/predictable-ears/">atharva-729.github.io/predictable-ears</a> · Code: <a href="https://github.com/atharva-729/predictable-ears">github.com/atharva-729/predictable-ears</a></p>
+    </div>
+    <ul class="approach">
+      <li><span>Data</span><span>A year (Nov 2025 – Oct 2026) of real listening from <b>2,000 random, active ListenBrainz users</b>: 26.7M listens.</span></li>
+      <li class="main"><span>Method</span><span><b>Predictability measured by guessing.</b> Four dumb rules learn from each listener's first 80% and guess the artist of every listen in the last 20%. Their hit rate is the predictability.</span></li>
+      <li><span>Also</span><span>How varied people are, how often they try new artists, when they get stuck on one track, and what kinds of listener exist.</span></li>
+      <li><span>Built</span><span>A Python + DuckDB pipeline on an 8 GB laptop, a public results page, and a private in-browser app for your own Spotify history.</span></li>
+    </ul>
+  </div>
+</section>
+
+<section id="idea"><div class="col">
+  <div class="eyebrow">Where it started</div>
+  <h2>The idea: how free is your taste?</h2>
+  <p>The project began as an innovation-team study with a Spotify hook and a philosophical question: when you press play, how much of it is choice? That question cannot be answered with data. Data shows what played, not why. So the project swapped it for one that can be measured:</p>
+  <div class="key"><b>The measurable version:</b> if simple rules, with no knowledge of you beyond your own history, can guess your next artist, that share of your listening is at least that predictable. That is <b>predictability, not free will</b>.</div>
+  <p>The plan had two parts:</p>
+  <ul class="tight">
+    <li><b>The study, for Anand.</b> Population-level results on public data: how predictable people are, explorers versus loopers, when people break out of a loop, and time-of-day effects. Aggregates only, publishable.</li>
+    <li><b>The personal app, for Atharva.</b> A single web page that reads your own Spotify history in the browser, computes the same measures, and shows where you sit against the population. Nothing leaves the browser.</li>
+  </ul>
+  <p>The ground rules were strict from the start: check the data licence first, hash user names on arrival, never publish anything about an individual, use the same metric definitions in the study and the app, test every metric on made-up listeners with known answers, and use no AI model anywhere in the analysis.</p>
+</div></section>
+
+<section id="theory">
+  <div class="col">
+  <div class="eyebrow">How it works in theory</div>
+  <h2>Measuring predictability by trying to predict</h2>
+  <p>There is no direct way to measure how predictable a person is. The standard trick is to try predicting them and see how often you are right. The trick has one subtlety: a good score means “at least this predictable”. A better predictor might do better, so any one rule gives a <b>lower bound</b>. Using deliberately dumb rules makes the result easy to explain: if a one-line rule gets 35%, nobody needs a model to see why.</p>
+
+  <h3>The four rules</h3>
+  <ul class="tight">
+    <li><b>Same as last:</b> guess the artist you just played.</li>
+    <li><b>Most played:</b> guess your most-played artist.</li>
+    <li><b>Usually next:</b> guess whichever artist most often followed the current one in your past. This is a first-order Markov chain.</li>
+    <li><b>This hour:</b> guess your most-played artist for this hour of the week (Monday 9 a.m., Saturday 11 p.m. and so on: 168 buckets).</li>
+  </ul>
+
+  <h3>Fair scoring: learn on the past, test on the future</h3>
+  <p>Each listener's history is split by time. The rules learn from the first 80% of their listens and are scored on every listen in the last 20%. Splitting by time matters. A random split would let a rule learn from listens that come <em>after</em> the ones it is guessing, which flatters it. <b>Hit@1</b> means the first guess was right; <b>hit@5</b> means the artist was among five guesses. A listener's predictability is the hit@1 of whichever rule works best for them.</p>
+  </div>
+
+  <figure class="toy" id="toy">
+    <div class="legend" id="toy-legend"></div>
+    <div class="strip" id="toy-strip" aria-label="Example listening sequence"></div>
+    <div class="rules" role="group" aria-label="Pick a rule" id="toy-rules"></div>
+    <div id="toy-guesses"></div>
+    <div class="score" id="toy-score"></div>
+    <figcaption>A made-up listener, for illustration only. The first 12 listens are the past the rule learns from; the 8 after the bar are guessed one at a time. Pick a rule to see its guesses: ✓ right, ✗ wrong. Notice how “same as last” wins on runs and loses exactly where a run ends.</figcaption>
+  </figure>
+
+  <div class="col">
+  <h3>How varied is someone? Entropy and “effective artists”</h3>
+  <p>Counting distinct artists can mislead: someone who plays one artist 3,000 times and 299 others once each has 300 artists, the same count as someone who spreads plays evenly over 300. Entropy weights each artist by its share of your plays:</p>
+  <div class="formula">H = −Σ p<sub>i</sub> · ln p<sub>i</sub> &nbsp;&nbsp;→&nbsp;&nbsp; effective artists = e<sup>H</sup></div>
+  <p>The second number has a plain meaning: if you split your listening perfectly evenly over N artists, e<sup>H</sup> is exactly N. So “257 effective artists” means your listening is as spread out as an even split over 257 artists.</p>
+
+  <h3>Exploration, loops and breakouts</h3>
+  <ul class="tight">
+    <li><b>Exploration rate:</b> the share of plays that are an artist you have never played before. The first two months are skipped, because at the start everything is “new”.</li>
+    <li><b>Loop day:</b> a day when one track is at least 30% of your plays and at least 5 plays.</li>
+    <li><b>Breakout month:</b> a month where your exploration is more than two standard deviations above your own average. Each person is compared with their own normal, not with everyone else.</li>
+  </ul>
+
+  <h3>Listener types: clustering</h3>
+  <p>Each listener becomes five numbers: predictability, entropy, exploration, top-10 concentration and loop days. Those are put on a common scale and grouped with <b>k-means</b>, which finds k centres and assigns each listener to the nearest. The number of groups (3, 4 or 5) was picked by the <b>silhouette score</b>, which rewards groups that are tight inside and far apart. Names like “Devotees” come from where each centre sits, for example low entropy and high concentration.</p>
+
+  <h3>Is a smarter model better? The ceiling test</h3>
+  <p>Two checks. First, a learned mix: per listener, the four rules vote, with weights tuned on a held-out slice of that listener's training data. Second, a ceiling: the share of listens where <em>any</em> rule's first guess was right. No way of combining these rules can beat that ceiling, so it shows how much room is left.</p>
+  </div>
+</section>
+
+<section id="data"><div class="col">
+  <div class="eyebrow">The data</div>
+  <h2>ListenBrainz: a public diary of every listen</h2>
+  <p><a href="https://listenbrainz.org">ListenBrainz</a> is a non-profit (MetaBrainz Foundation) where people log every track they play, from Spotify, Last.fm imports, phone and desktop players. The data is published as open dumps under <b>CC0</b>, the public-domain licence, so this use is allowed without restriction. It is the only large, public, listen-by-listen history with timestamps.</p>
+  <ul class="tight">
+    <li><b>What one listen is:</b> a timestamp, a hashed user id, the artist and track names, and usually MusicBrainz IDs (stable ids for artists and recordings). There are no skips, devices or locations.</li>
+    <li><b>The dump:</b> a single 249 GB compressed file, plus a 238 GB uncompressed “spark” version split into 1,543 files in date order. Only the last 239 files (39.9 GB) cover the year we needed.</li>
+    <li><b>The window:</b> 1 Nov 2025 – 31 Oct 2026: <b>478M listens from 77,345 users</b>.</li>
+  </ul>
+  </div>
+  <figure>
+    <div class="scroll"><table>
+      <tr><th>Step</th><th>Users</th><th>Why</th></tr>
+      <tr><td>Anyone with a listen in the 12 months</td><td class="n">77,345</td><td></td></tr>
+      <tr><td>Fewer than 3,000 listens</td><td class="n">−50,428</td><td>Too little to split 80/20 and still score.</td></tr>
+      <tr><td>Active in fewer than 10 months</td><td class="n">−7,481</td><td>Need a full year to see exploration and breakouts.</td></tr>
+      <tr><td>Likely bots or bulk imports</td><td class="n">−4,694</td><td>Over 2 “fast days”, over 1,500 listens in a day, or over 20% identical timestamps.</td></tr>
+      <tr class="hl"><td>Eligible</td><td class="n">14,742</td><td></td></tr>
+      <tr class="hl"><td>Random sample (fixed seed)</td><td class="n">2,000</td><td>Random, so not hand-picked; same sample every rerun.</td></tr>
+    </table></div>
+    <figcaption>Who made it into the study. A “fast day” is a day with 50+ listens where most gaps are under 30 seconds, which a person playing music cannot produce. Users with 1–2 such days were kept, minus those days.</figcaption>
+  </figure>
+  <div class="col">
+  <p>Cleaning then removed <b>297,695 duplicates</b> (the same track within 30 seconds) and handled artist names. Collaborations now count for every credited artist, and placeholders like “Unknown Artist” were recovered from the same recording where possible (11,516 of 37,462) or dropped. That left <b>26,660,248 listens</b>.</p>
+</div></section>
+
+<section id="plan">
+  <div class="col">
+  <div class="eyebrow">What we intended vs what we did</div>
+  <h2>The plan held. The details changed a lot.</h2>
+  <p>The original plan was seven phases with a checkpoint after each. All the study phases were done. These are the places where reality forced a different choice:</p>
+  </div>
+  <figure><div class="scroll"><table>
+    <tr><th>Planned</th><th>What happened</th><th>Why</th></tr>
+    <tr><td>Download the needed months of the listens dump</td><td>Pulled only the needed 40 GB out of a 238 GB archive by byte range</td><td>The dump is one file and you cannot download months separately; 249 GB did not fit on the disk.</td></tr>
+    <tr><td>Ingest with DuckDB in one go</td><td>Rewritten to run <b>one month at a time</b>, 2 cores, low priority</td><td>The first version froze the laptop. The new one took 7 minutes and left it usable.</td></tr>
+    <tr><td>Exclude a user for any bot-like day</td><td>More than 2 fast days excludes; 1–2 days are deleted, the user kept</td><td>One glitchy day out of 365 threw out 1,592 real listeners.</td></tr>
+    <tr><td>Primary artist only (“feat.” split off)</td><td><b>Every credited artist counts</b>, half each for a duet</td><td>Your call. “BTS, Halsey” crediting only BTS misrepresented collaborations.</td></tr>
+    <tr><td>Drop unknown artists</td><td>Recover from the same recording when it points to one artist; drop the rest</td><td>Your call. Kept 31% of those listens.</td></tr>
+    <tr><td>Report <span class="mono">music_service</span> share</td><td>Not possible</td><td>That field is not in this dump.</td></tr>
+    <tr><td>Time-of-day only if timezones are good</td><td>Kept, treated as UTC, and checked against an estimated local time</td><td>No timezones in the data. The check showed time of day barely matters either way.</td></tr>
+    <tr><td>Phase 7: personal app</td><td>Built and tested; waiting for your Spotify export</td><td>It needs your own data to check its “chosen vs flowed” view.</td></tr>
+  </table></div></figure>
+</section>
+
+<section id="build">
+  <div class="col">
+  <div class="eyebrow">How it was built</div>
+  <h2>A small pipeline that fits on a laptop</h2>
+  <p>Seven steps, each a command, each reading the previous step's output. Sizes and times are the real ones.</p>
+  </div>
+  <figure>
+    <div class="flow">
+      <div class="step"><b>Download</b><span class="io">238 GB archive → 39.9 GB</span><br><span class="tm">~1.5 h, server-limited</span></div>
+      <div class="step"><b>Ingest + sample</b><span class="io">478M listens → 27.0M</span><br><span class="tm">7 min, month by month</span></div>
+      <div class="step"><b>Clean</b><span class="io">artists, duplicates, sessions</span><br><span class="tm">5 min, 16 user batches</span></div>
+      <div class="step"><b>Metrics</b><span class="io">2,000 rows, local only</span><br><span class="tm">8 min, 1 core</span></div>
+      <div class="step"><b>Smarter model</b><span class="io">learned mix + ceiling</span><br><span class="tm">14 min, 1 core</span></div>
+      <div class="step"><b>Population</b><span class="io">aggregates, 25 KB</span><br><span class="tm">8 s</span></div>
+      <div class="step"><b>Pages</b><span class="io">results site + app</span><br><span class="tm">seconds</span></div>
+    </div>
+    <figcaption>Python with DuckDB (a database engine that reads Parquet files directly), numpy, pandas and scikit-learn. No AI model and no paid service.</figcaption>
+  </figure>
+  <div class="col">
+  <h3>Getting 40 GB out of a 238 GB file</h3>
+  <p>The “spark” archive is an uncompressed tar, a format where each file is preceded by a 512-byte header giving its name and size. Web servers allow <b>range requests</b> (“send me bytes 215,594,033,152 to …”). So instead of downloading everything, the downloader reads the headers one by one, jumps over the file contents, and downloads only the files it needs. Each request took 3 seconds to answer, so walking all 1,543 headers would take hours. Instead it downloaded one 256 MB slice near the end, found a header in it, and checked dates by reading only the timestamp column of a few files. That located the start of the window in a few minutes. Files then came down over 24 parallel connections (one connection got 1.7 MB/s; many together got 8–11 MB/s).</p>
+
+  <h3>Keeping an 8 GB laptop usable</h3>
+  <p>The first ingest asked DuckDB to build per-user tables over all 478M listens at once. Windows ran out of memory and started swapping. The rewrite processes one calendar month at a time: daily counts per user per month (9–13 s each), then the 2,000 users' listens month by month. The same idea fixed cleaning, which first spilled 8 GB to disk: global work runs on the 834,199 distinct artist credits instead of the 27M listens, and per-listen work runs in 16 batches of users.</p>
+
+  <h3>One definition, two languages, checked against each other</h3>
+  <p>The study runs in Python; the personal app runs in JavaScript in your browser. Both implement the same written spec (<span class="mono">METRICS.md</span>). They are tested against made-up listeners whose answers are known in advance: a “parrot” who plays one artist forever (same-as-last must score 100%), a strict A→B→C cycle (usually-next must score 100%, same-as-last 0%), a pure explorer (exploration 100%), a night owl, and two-artist collaborations. A parity test runs both implementations on the same listeners and requires identical results to 9 decimal places. 12 tests, all passing.</p>
+
+  <h3>Privacy by construction</h3>
+  <ul class="tight">
+    <li>User ids were hashed with a secret salt the moment they were read; raw ids were never written.</li>
+    <li>Per-listener results stay on the laptop and are excluded from git. Everything published is an aggregate over the 2,000.</li>
+    <li>A test checks that no user hash appears in any published file. A git hook blocks any Spotify history file from being committed.</li>
+    <li>The personal app has a browser security rule that forbids network requests, and contains no outside URLs at all.</li>
+  </ul>
+</div></section>
+
+<section id="story"><div class="col">
+  <div class="eyebrow">What happened, in order</div>
+  <h2>From README to live page in about a day</h2>
+  <ol class="timeline">
+    <li><span><b>Licence and sizes.</b> CC0 confirmed. The dump turned out to be one 249 GB file, too big for the disk.</span></li>
+    <li><span><b>The range-request trick.</b> Found that the uncompressed spark archive could be read selectively, and located the year near its end.</span></li>
+    <li class="bad"><span><b>Download stalls.</b> A hung connection stopped progress for 40 minutes. Fixed with a hard deadline on every chunk, then 3 files at a time.</span></li>
+    <li class="bad"><span><b>Laptop frozen by the first ingest.</b> Killed it, measured the work properly, rewrote it month by month: 7 minutes, machine usable.</span></li>
+    <li><span><b>Bot filter rethought.</b> 30% of the excluded “bots” had a single bad day. The rule became: 3 or more bad days excludes; 1–2 are deleted.</span></li>
+    <li class="bad"><span><b>Cleaning spilled 8 GB to disk.</b> Stopped after 4 minutes and rewritten in user batches: 5 minutes, no spill.</span></li>
+    <li><span><b>Artist rules redone.</b> Every credited artist counts, placeholders are recovered or dropped, and import tags after “ • ” are removed. Python, JS and tests updated together.</span></li>
+    <li><span><b>Overnight run.</b> Metrics, population results and the smarter model. The model was restarted once to keep its memory bounded on the heaviest listener (230k listens).</span></li>
+    <li><span><b>Published.</b> Results page on GitHub Pages, code pushed, personal app built with the real population numbers.</span></li>
+  </ol>
+</div></section>
+
+<section id="results">
+  <div class="col">
+  <div class="eyebrow">Results</div>
+  <h2>What the numbers say</h2>
+  </div>
+  <figure>
+    <div class="bars" role="img" aria-label="Median share of next artists guessed by each rule">
+      <div class="bar amber"><span>Same as last</span><span class="track"><span class="fillb" style="width:35%"></span></span><span class="v">35.0%</span></div>
+      <div class="bar"><span>Usually next</span><span class="track"><span class="fillb" style="width:21.1%"></span></span><span class="v">21.1%</span></div>
+      <div class="bar"><span>Most played</span><span class="track"><span class="fillb" style="width:3%"></span></span><span class="v">3.0%</span></div>
+      <div class="bar"><span>This hour</span><span class="track"><span class="fillb" style="width:1.8%"></span></span><span class="v">1.8%</span></div>
+      <div class="bar"><span>Same <i>track</i> as last</span><span class="track"><span class="fillb" style="width:2.1%;background:var(--a5)"></span></span><span class="v">2.1%</span></div>
+    </div>
+    <figcaption>Share of next artists each rule guessed right, for the typical (median) listener. Bars are on a 0–100% scale. “Same as last” is the best rule for 88% of listeners. The grey bar is the same rule at track level.</figcaption>
+  </figure>
+  <div class="col">
+  <ul class="tight">
+    <li><b>Headline:</b> the typical listener's next artist is guessed 35% of the time (middle half of listeners: 17–61%). For about a third of listeners the best rule is right more than half the time. Five guesses raise it only to 47%.</li>
+    <li><b>Runs, not repeats.</b> The same artist comes back 35% of the time, but the same track only 2%. People play several songs by an artist in a row, like an album, rather than one song on repeat.</li>
+    <li><b>Favourites are a weak guess.</b> Your most-played artist is next only 3% of the time. The typical listener spreads plays over about 257 effective artists, and their top 10 take only 24%.</li>
+    <li><b>Volume does not matter.</b> Lighter and heavier listeners score the same.</li>
+  </ul>
+  <h3>Five kinds of listener</h3>
+  </div>
+  <div class="types">
+    <div class="type" style="--c:var(--a1)"><b>Steady rotation</b><span class="pc">33% of listeners</span><br>20% predictable, 257 artists, 7% new each month. The broad middle.</div>
+    <div class="type" style="--c:var(--a3)"><b>Explorers</b><span class="pc">25%</span><br>20% predictable, 690 artists, 19% of plays a first-time artist.</div>
+    <div class="type" style="--c:var(--a2)"><b>Creatures of habit</b><span class="pc">24%</span><br>69% predictable with a normal 215 artists: long runs.</div>
+    <div class="type" style="--c:var(--a4)"><b>Devotees</b><span class="pc">16%</span><br>60% predictable with only 45 artists; top 10 take 57% of plays.</div>
+    <div class="type" style="--c:var(--a5)"><b>Loopers</b><span class="pc">2%</span><br>56% predictable, about 8 loop days a month.</div>
+  </div>
+  <div class="col">
+  <ul class="tight" style="margin-top:16px">
+    <li><b>Predictable is not the same as narrow.</b> Creatures of habit and Devotees are both predictable, for opposite reasons: long runs across a wide range, or a small world.</li>
+    <li><b>Exploring trades off against predictability, loosely.</b> Predictability falls from 59% to 23% across the tenths of exploration (rank correlation −0.32), then levels off.</li>
+    <li><b>A smarter model does not help.</b> The learned mix scored 34.5% against 35.3% for the best single rule. The ceiling, where any rule's first guess is right, is only 39.6%.</li>
+    <li><b>Loops slightly precede breakouts.</b> After a month with 3+ loop days, a breakout follows within two months 7.4% of the time, against 5.2% otherwise (×1.4). 47% of listeners have at least one breakout month.</li>
+    <li><b>Time of day barely matters.</b> Predictability stays at 41–45% at every hour, in UTC or in estimated local time; weekdays equal weekends. The estimated timezones look real (41% European offsets, 34% American), so UTC was not hiding a pattern.</li>
+  </ul>
+</div></section>
+
+<section id="conclusions"><div class="col">
+  <div class="eyebrow">Conclusions</div>
+  <h2>What this tells us</h2>
+  <div class="key"><b>Most of what is predictable about listening is momentum.</b> Once you start an artist, you tend to stay a while. When the run ends, what comes next is hard to guess from history: five guesses barely help, clever mixing does not help, and the ceiling sits at 40%.</div>
+  <ul class="tight">
+    <li><b>The free-will question, restated:</b> about a third of next-artist choices follow from the previous one. Whether that momentum is the listener's choice or autoplay doing the choosing cannot be told from this data. That is exactly what the personal app's “chosen vs flowed” view is for.</li>
+    <li><b>Habit takes different forms.</b> Two very different listeners can be equally predictable. Any product treating “predictable” as one type would mis-serve half of them.</li>
+    <li><b>The interesting moments are rare and detectable.</b> Run boundaries and breakout months are where listening is genuinely open, and loop-heavy stretches slightly precede them.</li>
+    <li><b>A useful benchmark.</b> Any recommender claiming to predict listening should beat 35% at next-artist, the score of a rule with no learning at all.</li>
+  </ul>
+</div></section>
+
+<section id="business">
+  <div class="col">
+  <div class="eyebrow">Does this make business sense?</div>
+  <h2>As a standalone business, no. As insight and as a hook, yes.</h2>
+  <p>A straight assessment, by who could use it:</p>
+  </div>
+  <div class="verdict">
+    <div><h4>Streaming services<span class="tag no">not a product</span></h4>Spotify and others already have far richer data: skips, devices, playlists, what was recommended. They would not buy this. The findings are still useful framing: most sessions are momentum, so the value of discovery sits at run ends and breakout months.</div>
+    <div><h4>Personal insight app<span class="tag maybe">plausible hook</span></h4>A private, in-browser “how predictable are you?” page, like a deeper Wrapped, is fun, shareable and privacy-safe (no upload). Hard to charge for; good for attention, a newsletter, or a portfolio.</div>
+    <div><h4>Recommender evaluation<span class="tag yes">real value</span></h4>The dumb-rule benchmark and the ceiling test are cheap and honest checks for any team building music recommendations. A consulting or internal-tooling angle, not a mass product.</div>
+    <div><h4>Labels and marketing<span class="tag maybe">niche</span></h4>Knowing when listeners are open to new artists (after loops, at breakouts) is interesting for campaign timing, but this data is too self-selected and anonymous to target anyone.</div>
+    <div><h4>Content and research<span class="tag yes">strong</span></h4>A clear, surprising, well-sourced finding on open data (“a one-line rule gets 35%; nothing beats it by much”) makes a good article, talk or innovation-team showcase.</div>
+  </div>
+  <div class="col">
+  <p style="margin-top:16px">The honest caveat for any commercial use: ListenBrainz users are a self-selected, music-nerdy crowd, mixed across services. Before anyone builds on the numbers, they should be checked on a broader population.</p>
+</div></section>
+
+<section id="next"><div class="col">
+  <div class="eyebrow">What could come next</div>
+  <h2>Further work, roughly in order of value</h2>
+  <ul class="tight">
+    <li><b>Run the personal app on your Spotify history.</b> It is built. It splits plays by how they started (you clicked, or it just played on) and compares predictability. That is the closest this project gets to the original choice question. About 15 minutes once the export arrives.</li>
+    <li><b>Study run boundaries.</b> What predicts the end of a run, and what comes after it? That is where the unexplained 60% lives.</li>
+    <li><b>A real sequence model</b> (for example artist embeddings and nearest neighbours) to test whether the 40% ceiling is a limit of these rules or of listening itself.</li>
+    <li><b>Skips and sessions:</b> Spotify data has skips, which ListenBrainz lacks. Skips after loops are a natural next measure.</li>
+    <li><b>More years and timezones:</b> several years would show real trends instead of the mechanical drift seen here. Estimated local time could replace UTC if a time effect ever shows up.</li>
+    <li><b>Polish:</b> clearer colours on the listener-types chart and a results summary at the top of the README.</li>
+  </ul>
+</div></section>
+
+<section id="limits"><div class="col">
+  <div class="eyebrow">Read with care</div>
+  <h2>Limits</h2>
+  <ul class="tight">
+    <li><b>What played, not why.</b> Your own picks, autoplay and algorithmic playlists look identical here.</li>
+    <li><b>No skips.</b> A listen is logged after about 30 seconds or half the track.</li>
+    <li><b>A self-selected crowd</b> of heavy listeners (3,000+ a year was required).</li>
+    <li><b>Mixed services</b>, no timezones, one year.</li>
+    <li><b>Exploration falls through the year</b> (14% → 8%) largely because later months are judged against more history. Not a real trend.</li>
+    <li><b>The smarter-model comparison</b> picks each listener's best single rule with hindsight, which flatters it a little. The ceiling shows this does not change the answer.</li>
+    <li><b>Artist splitting is imperfect:</b> “You &amp; I” becomes two artists; text in brackets is not split. Under 0.1% of listens.</li>
+  </ul>
+</div></section>
+
+<section id="glossary"><div class="col">
+  <div class="eyebrow">Glossary</div>
+  <h2>Terms used here</h2>
+  <dl class="gloss">
+    <dt>Listen</dt><dd>One logged play of a track, with a timestamp.</dd>
+    <dt>Credit</dt><dd>The artists on a listen. A duet credits two; each gets half the listen.</dd>
+    <dt>Hit@1, hit@5</dt><dd>The share of guesses where the right artist was the first guess, or among five.</dd>
+    <dt>Predictability</dt><dd>Hit@1 of the best of the four rules for that listener.</dd>
+    <dt>Median, middle half</dt><dd>The typical listener; the range covering the middle 50% of listeners.</dd>
+    <dt>Effective artists</dt><dd>e to the power of entropy: how many artists an even split would need to be this varied.</dd>
+    <dt>Exploration</dt><dd>Share of plays that are an artist the listener had never played before.</dd>
+    <dt>Loop day</dt><dd>One track at least 30% of a day's plays and at least 5 plays.</dd>
+    <dt>Breakout month</dt><dd>Exploration more than 2 standard deviations above the listener's own average.</dd>
+    <dt>k-means, silhouette</dt><dd>A method that groups points around k centres; a score that rates how clean the groups are.</dd>
+    <dt>Ceiling</dt><dd>Share of listens where any rule's first guess was right; the most any mix of these rules could score.</dd>
+    <dt>CC0</dt><dd>A public-domain dedication: free to use for any purpose.</dd>
+    <dt>Range request</dt><dd>Asking a web server for only part of a file, by byte position.</dd>
+    <dt>DuckDB, Parquet</dt><dd>A database engine that runs inside a program; a compact column-based file format it reads directly.</dd>
+  </dl>
+  <p class="note" style="margin-top:24px">Listening data from ListenBrainz, a MetaBrainz Foundation project, released under CC0. No individual listener appears on this page; the toy example is made up.</p>
+</div></section>
+</main>
+</div>
+
+<script>
+(() => {
+  // Toy listener: made up for illustration. 12 past listens, then 8 to guess.
+  const A = { R: ["Radiohead", "var(--a1)"], B: ["Björk", "var(--a2)"], D: ["Daft Punk", "var(--a3)"], N: ["Arca (new)", "var(--a4)"] };
+  const past = "RRRBBRRDDDRR".split(""), test = "RRBBBNDD".split("");
+  const all = past.concat(test);
+  const count = (xs) => xs.reduce((m, x) => (m[x] = (m[x] || 0) + 1, m), {});
+  const top = (m) => Object.keys(m).sort((a, b) => m[b] - m[a] || a.localeCompare(b))[0];
+  const freq = count(past), fav = top(freq);
+  const trans = {};
+  for (let i = 0; i + 1 < past.length; i++) (trans[past[i]] = trans[past[i]] || {})[past[i + 1]] = (trans[past[i]][past[i + 1]] || 0) + 1;
+  const RULES = {
+    "Same as last": (i) => all[i - 1],
+    "Most played": () => fav,
+    "Usually next": (i) => (trans[all[i - 1]] ? top(trans[all[i - 1]]) : fav),
+  };
+  const chip = (k, label) => `<span class="chip" style="background:${A[k][1]}" title="${A[k][0]}">${label || k}</span>`;
+  const $ = (id) => document.getElementById(id);
+  $("toy-legend").innerHTML = Object.entries(A).map(([k, [n]]) => `<span>${chip(k)} ${n}</span>`).join("");
+  $("toy-strip").innerHTML = past.map((k, i) => `<div class="slot">${chip(k)}<span class="t">${i + 1}</span></div>`).join("")
+    + `<span class="divline" aria-hidden="true"></span>` + test.map((k, i) => `<div class="slot">${chip(k)}<span class="t">${past.length + i + 1}</span></div>`).join("");
+  function show(name) {
+    document.querySelectorAll("#toy-rules button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.r === name)));
+    let hits = 0, cells = "";
+    test.forEach((k, j) => {
+      const i = past.length + j, g = RULES[name](i), ok = g === k;
+      hits += ok;
+      cells += `<div class="slot">${chip(g)}<span class="mark ${ok ? "h" : "m"}">${ok ? "✓" : "✗"}</span></div>`;
+    });
+    $("toy-guesses").innerHTML = `<div class="note">Guesses for listens 13–20:</div><div class="guessrow" style="padding-left:${past.length * 34 + 14}px">${cells}</div>`;
+    $("toy-score").textContent = `${name}: ${hits} of ${test.length} right (${Math.round(100 * hits / test.length)}%)`;
+    fit();
+  }
+  // On narrow screens the guess row cannot line up under the strip, so drop the offset.
+  function fit() { const g = document.querySelector(".guessrow"); if (g && innerWidth < 760) g.style.paddingLeft = "0"; }
+  $("toy-rules").innerHTML = Object.keys(RULES).map((r) => `<button type="button" id="rule-${r.replace(/\W+/g, "-")}" data-r="${r}" aria-pressed="false">${r}</button>`).join("");
+  document.querySelectorAll("#toy-rules button").forEach((b) => b.addEventListener("click", () => show(b.dataset.r)));
+  show("Same as last");
+  addEventListener("resize", fit);
+})();
+</script>
+</body>
+</html>
