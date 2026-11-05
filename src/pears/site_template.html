@@ -15,8 +15,25 @@
   --ok:#2fd3a7; --bad:#ff5a4d;
   /* chart series: reference palette, dark steps */
   --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500; --s5:#d55181; --grid:#2c2c2a; --axis:#383835;
+  --tipbg:#000;
   --serif:"Fraunces",Georgia,serif; --sans:"IBM Plex Sans",system-ui,sans-serif; --mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+  color-scheme:dark;
 }
+/* light theme: follows the system unless the toggle chose a theme */
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]){
+  --ink:#f7f6f2; --ink2:#ffffff; --ink3:#ece9e1; --rule:#d9d5ca;
+  --fg:#17181c; --soft:#3c414d; --mut:#686e7c;
+  --flame:#b85300; --flame-bg:rgba(232,120,30,.12);
+  --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a; --s4:#eda100; --s5:#e87ba4; --grid:#e1e0d9; --axis:#c3c2b7;
+  --tipbg:#ffffff; color-scheme:light}}
+:root[data-theme="light"]{
+  --ink:#f7f6f2; --ink2:#ffffff; --ink3:#ece9e1; --rule:#d9d5ca;
+  --fg:#17181c; --soft:#3c414d; --mut:#686e7c;
+  --flame:#b85300; --flame-bg:rgba(232,120,30,.12);
+  --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a; --s4:#eda100; --s5:#e87ba4; --grid:#e1e0d9; --axis:#c3c2b7;
+  --tipbg:#ffffff; color-scheme:light}
+.theme-toggle{font:600 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:6px 10px;border-radius:999px;border:1px solid var(--rule);background:var(--ink2);color:var(--fg);cursor:pointer}
+.theme-toggle:hover{border-color:var(--flame)}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{margin:0;background:var(--ink);color:var(--fg);font:15px/1.55 var(--sans);-webkit-font-smoothing:antialiased}
@@ -89,7 +106,7 @@ section.alt .panel{background:var(--ink)}
 .ln{display:inline-block;width:18px;height:2px;flex:none;margin-top:9px}
 svg text{fill:var(--mut);font:11px var(--sans)}
 svg .lab{fill:var(--soft)}
-.tip{position:fixed;pointer-events:none;background:#000;border:1px solid var(--rule);border-radius:3px;padding:7px 9px;font-size:12.5px;color:var(--fg);z-index:9;display:none;max-width:260px}
+.tip{position:fixed;pointer-events:none;background:var(--tipbg);border:1px solid var(--rule);border-radius:3px;padding:7px 9px;font-size:12.5px;color:var(--fg);z-index:9;display:none;max-width:260px}
 .notobv{margin-top:22px;padding:16px 18px;background:var(--ink2);border:1px solid var(--rule);border-radius:3px}
 section.alt .notobv{background:var(--ink)}
 .notobv .kicker{margin-bottom:8px}
@@ -113,7 +130,7 @@ pre{background:var(--ink);border:1px solid var(--rule);border-radius:3px;padding
 
 <section id="aim"><div class="wrap">
   <div class="top"><span>predictable-ears · November 2026</span>
-    <nav><a href="explainer.html">Explainer</a><a href="#data">Data</a><a href="#results">Results</a><a href="#types">Listener types</a><a href="#smarter">Smarter model</a><a href="#loops">Loops</a><a href="#time">Time of day</a><a href="#how">How ↓</a></nav></div>
+    <nav><a href="explainer.html">Explainer</a><a href="#data">Data</a><a href="#results">Results</a><a href="#types">Listener types</a><a href="#smarter">Smarter model</a><a href="#loops">Loops</a><a href="#time">Time of day</a><a href="#how">How ↓</a><button type="button" class="theme-toggle" id="theme-toggle">Light mode</button></nav></div>
   <div class="aimgrid">
     <div>
       <div class="kicker">The question</div>

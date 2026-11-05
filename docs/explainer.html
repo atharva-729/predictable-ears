@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="description" content="The whole Predictable Ears project explained: idea, theory, data, plan vs reality, results, conclusions and business sense.">
+<script>try{var t=localStorage.getItem('pe-theme');if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
 <title>Predictable Ears Explained</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -124,8 +125,15 @@ dl.gloss dt{font:600 14px var(--display)} dl.gloss dd{margin:0;color:var(--ink-2
 @media (max-width:900px){.page{grid-template-columns:minmax(0,1fr);gap:0}nav.rail{position:static;grid-auto-flow:row;margin-bottom:10px;display:none}.opener{grid-template-columns:minmax(0,1fr)}}
 @media (max-width:520px){.bar{grid-template-columns:96px minmax(0,1fr) 54px}.approach li{grid-template-columns:minmax(0,1fr);gap:2px}dl.gloss{grid-template-columns:minmax(0,1fr)}}
 </style>
+<style>
+.theme-toggle{position:fixed;top:calc(env(safe-area-inset-top,0px) + 12px);right:max(12px,env(safe-area-inset-right,0px));z-index:20;
+  font:600 12px var(--display);padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:var(--sheet);color:var(--ink);cursor:pointer}
+.theme-toggle:hover{border-color:var(--cobalt)}
+</style>
 </head>
 <body>
+<button type="button" class="theme-toggle" id="theme-toggle">Dark mode</button>
+
 
 <div class="page">
 <nav class="rail" aria-label="Sections">
@@ -483,6 +491,23 @@ dl.gloss dt{font:600 14px var(--display)} dl.gloss dd{margin:0;color:var(--ink-2
   document.querySelectorAll("#toy-rules button").forEach((b) => b.addEventListener("click", () => show(b.dataset.r)));
   show("Same as last");
   addEventListener("resize", fit);
+})();
+</script>
+<script>
+(function () {
+  var r = document.documentElement, b = document.getElementById("theme-toggle");
+  if (!b) return;
+  function eff() { return r.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"); }
+  function label() { var d = eff() === "dark"; b.textContent = d ? "Light mode" : "Dark mode"; b.setAttribute("aria-label", "Switch to " + (d ? "light" : "dark") + " mode"); }
+  b.addEventListener("click", function () {
+    var next = eff() === "dark" ? "light" : "dark";
+    r.dataset.theme = next;
+    try { localStorage.setItem("pe-theme", next); } catch (e) {}
+    label();
+    dispatchEvent(new Event("resize"));  // redraw charts with the new colours
+  });
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", label);
+  label();
 })();
 </script>
 </body>
